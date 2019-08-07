@@ -1,0 +1,14 @@
+pymongo==3.8.0
+dnspython>=1.15.0
+ipwhois>=1.1.0
+colorama>=0.3.9
+shodan>=1.13.0
+dnslib>=0.9.10
+requests-html>=0.10.0
+beautifulsoup4>=4.6.3
+trans>=2.1.0
+pyopenssl>=18.0.0
+netaddr>=0.7.19
+validator_collection
+tld>=0.9.3
+

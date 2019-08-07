@@ -1,0 +1,8 @@
+virustotal = "14bd74bff45914d05f2f0f0209c92b936af0ae9de615c99f5fce39a9ce4c299a"
+hunterio = "5f02efd97557e0cc0327ba096a16b86322c55c55"
+shodan = "Eb6707RrT00E5vexFl0clX6xoUL22qM2"
+weleakinfo = "3860a747d2b9b70b9b152b6fcfb510a3633e7c3f"
+weleakinfo_priv = "532d712b49f3420b4b64ce4e244df7c3f7001577"
+linkedin_username = "mtay443@gmail.com"
+linkedin_password = "platycryptus_project17"
+grayhatwarfare = "8c029e7589d8595e4758a17224009d97"
