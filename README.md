@@ -89,7 +89,6 @@ python ASM.py -t 192.168.0.1
 To run Attack Surface Mapper on a single IP address, with both passive and active reconnaissance modules:
 python ASM.py -t 192.168.0.1 -a
 ```
-
 ## Authors
 * [**Andreas Georgiou**](https://github.com/superhedgy)
 * [**Jacob Wilkin**](https://github.com/Greenwolf)
@@ -99,7 +98,3 @@ python ASM.py -t 192.168.0.1 -a
 * Thanks to `[Your Name Could Be Here, Come Help Out!]` for contributions to the project.
 
 ![Attack Surface Mapper Logo](docs/logo.png?raw=true "Attack Surface Mapper Logo")
-
-Youtube Trailer:
-
-[![Attack Surface Mapper Trailer](https://imagelinkOfScreenshotOfYoutubeTrailerHere.com/image.jpg)](https://www.youtube.com/ "Attack Surface Mapper Trailer")
