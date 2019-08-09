@@ -1,0 +1,8 @@
+virustotal = ""
+hunterio = ""
+shodan = ""
+weleakinfo = ""
+weleakinfo_priv = ""
+linkedin_username = ""
+linkedin_password = ""
+grayhatwarfare = ""
