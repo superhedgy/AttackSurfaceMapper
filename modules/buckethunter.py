@@ -10,6 +10,27 @@ from tld import get_tld, get_fld
 # External Libraries
 import requests
 
+def cprint (type,msg,reset):
+	colorama.init()
+	message = {
+		"action": Fore.YELLOW,
+		"positive": Fore.GREEN + Style.BRIGHT,
+		"info": Fore.YELLOW,
+		"reset": Style.RESET_ALL,
+		"red": Fore.RED,
+		"white" : Fore.WHITE,
+		"green" : Fore.GREEN,
+		"yellow" : Fore.YELLOW
+	}
+	style = message.get(type.lower())
+
+	if type == "error":
+		print("{0}\n[*] Error: {1}".format(Fore.RED+Style.BRIGHT,Style.RESET_ALL+Fore.WHITE+msg))
+	else:
+		print(style + msg,end="")
+	if (reset==1):
+		print(Style.RESET_ALL)
+
 def passive_query(hostx,key):
 
     keywords = get_tld(hostx.primary_domain, as_object=True,fail_silently=True,fix_protocol=True).domain
