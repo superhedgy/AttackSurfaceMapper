@@ -2,7 +2,7 @@
 #   Filename: hunterio.py
 #   Module: HunterIO
 #   Author: Andreas Georgiou (@superhedgy)
-#https://api.hunter.io/v2/domain-search?domain=
+# https://api.hunter.io/v2/domain-search?domain=
 
 # Standard Libraries
 import json
@@ -10,12 +10,13 @@ import json
 # External Libraries
 import requests
 
-def query(hostx,key):
+
+def query(hostx, key):
     try:
         domain = hostx.primary_domain
-        par = {'domain': domain,'api_key': key}
+        par = {'domain': domain, 'api_key': key}
         user_agent = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'}
-        req = requests.get("https://api.hunter.io/v2/domain-search",params=par,headers=user_agent)
+        req = requests.get("https://api.hunter.io/v2/domain-search", params=par, headers=user_agent)
         hunterio_api = json.loads(req.text)
 
         try:
