@@ -11,4 +11,4 @@ pyopenssl>=18.0.0
 netaddr>=0.7.19
 validator_collection
 tld>=0.9.3
-
+selenium>=3.141.0
