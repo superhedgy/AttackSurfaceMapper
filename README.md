@@ -67,11 +67,11 @@ Authors: Andreas Georgiou (@superhedgy)
 
 ### Example run command
 ```
-$ python3 ASM.py -t your.site.com -ln -o demo_run -w resources/top100_sublist.txt
+$ python3 ASM.py -t your.site.com -ln -w resources/top100_sublist.txt -o demo_run
 ```
 
 ## Authors
-* [Andreas Georgiou](https://github.com/superhedgy)
+* [Andreas Georgiou](https://twitter.com/superhedgy)
 * [Jacob Wilkin](https://github.com/Greenwolf)
 
 ## Acknowledgments
