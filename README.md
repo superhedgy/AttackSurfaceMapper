@@ -63,6 +63,11 @@ Authors: Andreas Georgiou (@superhedgy)
 	 Jacob Wilkin (@greenwolf)```
 ```
 
+### Example run command
+```
+python3 ASM.py -t your.site.com -ln -o demo_run -w resources/top100_sublist.txt
+```
+
 ## Authors
 * [Andreas Georgiou](https://github.com/superhedgy)
 * [Jacob Wilkin](https://github.com/Greenwolf)
