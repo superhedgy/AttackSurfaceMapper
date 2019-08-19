@@ -1,4 +1,7 @@
 ![alt text](https://img.shields.io/badge/Python-3_only-blue.svg "Python 3 only")
+![GitHub](https://img.shields.io/github/license/superhedgy/AttackSurfaceMapper)
+![GitHub last commit](https://img.shields.io/github/last-commit/superhedgy/AttackSurfaceMapper)
+
 
 ![Attack Surface Mapper Logo](https://npercoco.typepad.com/.a/6a0133f264aa62970b0240a49c6ba4200d-800wi "Attack Surface Mapper Logo")
 
