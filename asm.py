@@ -197,7 +197,7 @@ def init_checks(master_switch, outpath):
         cprint("error", "Targets file \"" + args.targets + "\" does not exist", 1)
         exit()
 
-    if args.wordlist is None or args.wordlist is "":
+    if args.wordlist is None or args.wordlist == "":
         cprint("error", "Wordlist file argument is empty", 1)
         exit()
 
