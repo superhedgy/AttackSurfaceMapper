@@ -4,16 +4,20 @@
 #   Author: Andreas Georgiou (@superhedgy)
 
 # Standard Libraries
-import socket,json,time,traceback
-import ASM
+import json
+import time
+import traceback
 
 # External Libraries
 import requests
 
-def query(hostx,api_key,priv_key):
+import asm
+
+
+def query(hostx, api_key, priv_key):
     head = {
-    'user-agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0",
-    'authorization': "Bearer" + " " + api_key
+        'user-agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0",
+        'authorization': "Bearer" + " " + api_key
     }
 
     if not hostx.emails:
@@ -23,67 +27,67 @@ def query(hostx,api_key,priv_key):
     for email in hostx.emails:
         try:
             url = "https://api.weleakinfo.com/v3/public/email/" + email
-            response = requests.get(url,headers=head)
+            response = requests.get(url, headers=head)
 
-            if not (response.status_code==200):
+            if not (response.status_code == 200):
                 return -1
 
             api = json.loads(response.text)
 
-            if (api['Total'] == 0):
+            if api['Total'] == 0:
                 return 0
 
             try:
                 for item in api['Data']:
                     result = result + "," + item
 
-                hostx.breaches[email] = result.replace(',','',1)
+                hostx.breaches[email] = result.replace(',', '', 1)
             except:
                 pass
 
-            #print (breaches.items())
+            # print (breaches.items())
 
         except:
-            ASM.cprint ("error","[*] Error: connecting with WeLeakInfo API",1)
+            asm.cprint("error", "[*] Error: connecting with WeLeakInfo API", 1)
 
         time.sleep(2)
 
-    return None
+    return
 
-def priv_api (hostx,api_key,priv_key):
 
+def priv_api(hostx, api_key, priv_key):
     headers = {
-    'User-agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0",
-    "Content-Type": "application/x-www-form-urlencoded",
-    'authorization': "Bearer "+priv_key
+        'User-agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0",
+        "Content-Type": "application/x-www-form-urlencoded",
+        'authorization': "Bearer " + priv_key
     }
 
     try:
-        API_endpoint = "https://api.weleakinfo.com/v3/search"
+        api_endpoint = "https://api.weleakinfo.com/v3/search"
         query = {
-        "limit": "1000",
-        "offset": "",
-        "query": "*"+"@"+hostx.primary_domain,
-        "regex": "",
-        "type": "email",
-        "wildcard": "true"
+            "limit": "1000",
+            "offset": "",
+            "query": "*" + "@" + hostx.primary_domain,
+            "regex": "",
+            "type": "email",
+            "wildcard": "true"
         }
 
-        response = requests.request("POST",API_endpoint, data=query,headers=headers)
+        response = requests.request("POST", api_endpoint, data=query, headers=headers)
 
         if response.status_code is not 200:
             return -1
 
         api = json.loads(response.text)
 
-        if (api['Total'] == 0):
+        if api['Total'] == 0:
             return 0
 
         try:
             for result in api['Data']:
                 try:
-                    #print(result['Password'])
-                    #print(result['Email'])
+                    # print(result['Password'])
+                    # print(result['Email'])
                     hostx.creds.append(result['Email'] + "::" + result['Password'])
 
                     if result['Email'] not in hostx.emails:
@@ -92,15 +96,15 @@ def priv_api (hostx,api_key,priv_key):
                     pass
 
                 try:
-                    #print(result['Hash'])
-                    #print(result['Email'])
+                    # print(result['Hash'])
+                    # print(result['Email'])
                     hostx.hashes.append(result['Email'] + "::" + result['Hash'])
 
                     if result['Email'] not in hostx.emails:
                         hostx.emails.append(result['Email'])
                 except:
                     pass
-                #hostx.breaches[email] = result
+                # hostx.breaches[email] = result
         except:
             traceback.print_exc()
             pass
