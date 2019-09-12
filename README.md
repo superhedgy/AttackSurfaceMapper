@@ -1,4 +1,7 @@
 ![Python 3](https://img.shields.io/badge/Python-3_only-blue.svg "Python 3 only")
+![alt text](https://img.shields.io/badge/Python-3_only-blue.svg "Python 3 only")
+![GitHub](https://img.shields.io/github/license/superhedgy/AttackSurfaceMapper)
+![GitHub last commit](https://img.shields.io/github/last-commit/superhedgy/AttackSurfaceMapper)
 
 ![Attack Surface Mapper Logo](https://npercoco.typepad.com/.a/6a0133f264aa62970b0240a49c6ba4200d-800wi "Attack Surface Mapper Logo")
 
@@ -6,8 +9,6 @@
 Attack Surface Mapper is a reconnaissance tool that uses a mixture of open source intellgence and active techniques to expand the attack surface of your target. You feed in a mixture of one or more domains, subdomains and IP addresses and it uses numerous techniques to find more targets. It enumerates subdomains with bruteforcing and passive lookups, Other IPs of the same network block owner, IPs that have multiple domain names pointing to them and so on.
 
 Once the target list is fully expanded it performs passive reconnaissance on them, taking screenshots of websites, generating visual maps, looking up credentials in public breaches, passive port scanning with Shodan and scraping employees from LinkedIn.
-
-What this means is you're left with hard actionable data gathered from these processes, targets to scan, websites to attack, email addresses to phish and credentials to bruteforce and spray.
 
 ## Demo
 [![Demo](https://img.youtube.com/vi/buIQSf_gmdE/0.jpg)](https://www.youtube.com/watch?v=buIQSf_gmdE)
@@ -34,6 +35,22 @@ As this is a Python based tool, it should theoretically run on Linux, ChromeOS (
     ```bash
     python3 asm.py
     ```
+=======
+[1] Download AttackSurfaceMapper
+```
+$ git clone https://github.com/superhedgy/AttackSurfaceMapper
+```
+
+[2] Install Python dependencies
+```
+$ cd AttackSurfaceMapper
+$ python3 -m pip install --no-cache-dir -r requirements.txt
+```
+
+[3] Add optional API keys to enable more data gathering
+```
+$ nano keylist.asm
+```
 
 ### Optional Parameters
 Additional optional parameters can also be set to choose to include active reconnaissance modules in addition to the default passive modules.
@@ -65,14 +82,18 @@ optional arguments:
   -v, --verbose         Verbose ouput in the terminal window.
 
 Authors: Andreas Georgiou (@superhedgy)
-	 Jacob Wilkin (@greenwolf)```
+	 Jacob Wilkin (@greenwolf)
+```
+
+### Example run command
+```
+$ python3 ASM.py -t your.site.com -ln -w resources/top100_sublist.txt -o demo_run
 ```
 
 ## Authors
-* [Andreas Georgiou](https://github.com/superhedgy)
+* [Andreas Georgiou](https://twitter.com/superhedgy)
 * [Jacob Wilkin](https://github.com/Greenwolf)
 
 ## Acknowledgments
-* Thanks to this tool/technique 1, etc etc, name and list all open source projects got inspirations/code from.
 * Thanks to `[Your Name Could Be Here, Come Help Out!]` for contributions to the project.
 
