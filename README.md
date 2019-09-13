@@ -13,29 +13,9 @@ Once the target list is fully expanded it performs passive reconnaissance on the
 ## Demo
 [![Demo](https://img.youtube.com/vi/buIQSf_gmdE/0.jpg)](https://www.youtube.com/watch?v=buIQSf_gmdE)
 
-## Getting Started
-These instructions will show you the requirements for and how to use Attack Surface Mapper.
-
 ## Setup
 As this is a Python based tool, it should theoretically run on Linux, ChromeOS ([Developer Mode](https://www.chromium.org/chromium-os/developer-information-for-chrome-os-devices/generic)), macOS and Windows.
 
-1. Download and Install Attack Surface Mapper
-    ```bash
-    git clone https://github.com/superhedgy/AttackSurfaceMapper
-    cd AttackSurfaceMapper
-    python3 -m pip install --no-cache-dir -r requirements.txt
-    ```
-
-2. Provide Attack Surface Mapper with optional API keys to enable more data gathering
-    ```
-    Open keylist.asm and enter the API Keys.
-    ```
-    
-3. Run Attack Surface Mapper
-    ```bash
-    python3 asm.py
-    ```
-=======
 [1] Download AttackSurfaceMapper
 ```
 $ git clone https://github.com/superhedgy/AttackSurfaceMapper
@@ -50,6 +30,11 @@ $ python3 -m pip install --no-cache-dir -r requirements.txt
 [3] Add optional API keys to enable more data gathering
 ```
 $ nano keylist.asm
+```
+
+### Example run command
+```
+$ python3 ASM.py -t your.site.com -ln -w resources/top100_sublist.txt -o demo_run
 ```
 
 ### Optional Parameters
@@ -83,11 +68,6 @@ optional arguments:
 
 Authors: Andreas Georgiou (@superhedgy)
 	 Jacob Wilkin (@greenwolf)
-```
-
-### Example run command
-```
-$ python3 ASM.py -t your.site.com -ln -w resources/top100_sublist.txt -o demo_run
 ```
 
 ## Authors
