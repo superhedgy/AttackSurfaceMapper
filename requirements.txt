@@ -8,7 +8,6 @@ pymongo==3.8.0
 pyopenssl>=18.0.0
 requests
 requests-html>=0.10.0
-selenium
 shodan>=1.13.0
 tld>=0.9.3
 trans>=2.1.0
