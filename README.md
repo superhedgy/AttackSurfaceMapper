@@ -26,13 +26,15 @@ $ cd AttackSurfaceMapper
 $ python3 -m pip install --no-cache-dir -r requirements.txt
 ```
 
-[3] Add optional API keys to enable more data gathering
-[https://www.virustotal.com/gui/join-us](https://www.virustotal.com/gui/join-us)<br/>
-[https://hunter.io/users/sign_up](https://hunter.io/users/sign_up)<br/>
-[https://account.shodan.io/register](https://account.shodan.io/register)<br/>
-[https://weleakinfo.com/register](https://weleakinfo.com/register)<br/>
-[https://www.linkedin.com/start/join](https://www.linkedin.com/start/join)<br/>
-[https://buckets.grayhatwarfare.com/register](https://buckets.grayhatwarfare.com/register)<br/>
+[3] Add optional API keys to enable more data gathering 
+
+Register and obtain an API key from:
+	[https://www.virustotal.com/gui/join-us](https://www.virustotal.com/gui/join-us) 
+	[https://hunter.io/users/sign_up](https://hunter.io/users/sign_up) 
+	[https://account.shodan.io/register](https://account.shodan.io/register) 
+	[https://weleakinfo.com/register](https://weleakinfo.com/register) 
+	[https://www.linkedin.com/start/join](https://www.linkedin.com/start/join) 
+	[https://buckets.grayhatwarfare.com/register](https://buckets.grayhatwarfare.com/register) 
 ```
 $ nano keylist.asm
 ```
