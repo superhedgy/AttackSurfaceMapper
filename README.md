@@ -41,7 +41,7 @@ $ nano keylist.asm
 
 ### Example run command
 ```
-$ python3 ASM.py -t your.site.com -ln -w resources/top100_sublist.txt -o demo_run
+$ python3 asm.py -t your.site.com -ln -w resources/top100_sublist.txt -o demo_run
 ```
 
 ### Optional Parameters
