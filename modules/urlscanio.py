@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 #   Filename: urlscanio.py
 #   Module: URLScanIO Module
-#   Author: Andreas Georgiou (@superhedgy)
+#   Author: Andreas Georgiou (@superhedgy) & Jacob Wilkin (Greenwolf @jacob_wilkin)
 
 # Standard Libraries
 import json
@@ -10,7 +10,7 @@ import json
 import requests
 
 import asm
-
+import os
 
 def get_domain(IP):
     # print (ip.address)
@@ -18,7 +18,10 @@ def get_domain(IP):
     user_agent = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'}
     try:
-        response = requests.get('https://urlscan.io/api/v1/search?q=ip:' + IP, headers=user_agent)
+        if 'http_proxy' in os.environ:
+            response = requests.get('https://urlscan.io/api/v1/search?q=ip:' + IP, headers=user_agent,verify=False)
+        else:
+            response = requests.get('https://urlscan.io/api/v1/search?q=ip:' + IP, headers=user_agent)
         api = json.loads(response.text)
         if api['total'] == 0:
             return
@@ -39,7 +42,10 @@ def query(hostx):
         user_agent = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'}
         try:
-            response = requests.get("https://urlscan.io/api/v1/search", params=par, headers=user_agent)
+            if 'http_proxy' in os.environ:
+                response = requests.get("https://urlscan.io/api/v1/search", params=par, headers=user_agent,verify=False)
+            else:
+                response = requests.get("https://urlscan.io/api/v1/search", params=par, headers=user_agent)
             # print(response.status_code)
             # print(response.text)
             api = json.loads(response.text)
