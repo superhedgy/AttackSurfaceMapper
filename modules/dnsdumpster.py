@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 #   Filename: dnsdumpster.py
 #   Module: DNSdumpster
-#   Author: Andreas Georgiou (@superhedgy)
+#   Author: Andreas Georgiou (@superhedgy) & Jacob Wilkin (Greenwolf @jacob_wilkin)
 
 # Standard Libraries
 import os
@@ -23,8 +23,10 @@ def get_map(hostx, out_path):
     if hostx.primary_domain == "":
         return None
     try:
-
-        res1 = requests.get(DNS_DUMPSTER, headers=headers)
+        if 'http_proxy' in os.environ:
+            res1 = requests.get(DNS_DUMPSTER, headers=headers,verify=False)
+        else:
+            res1 = requests.get(DNS_DUMPSTER, headers=headers)
         csrftoken = res1.cookies.get('csrftoken')
         data = {
             'csrfmiddlewaretoken': csrftoken,
@@ -33,9 +35,12 @@ def get_map(hostx, out_path):
 
         headers = {'user-agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0",
                    'Referer': DNS_DUMPSTER, 'Cookie': 'csrftoken=' + csrftoken}
-        res2 = requests.post(DNS_DUMPSTER, data=data, headers=headers)
-
-        response = requests.get(map_url, headers=headers)
+        if 'http_proxy' in os.environ:
+            res2 = requests.post(DNS_DUMPSTER, data=data, headers=headers,verify=False)
+            response = requests.get(map_url, headers=headers,verify=False)
+        else:
+            res2 = requests.post(DNS_DUMPSTER, data=data, headers=headers)
+            response = requests.get(map_url, headers=headers)
         # print("Response Status: " + response.status_code) # Debug Statement
         if response.status_code == 200:
 
