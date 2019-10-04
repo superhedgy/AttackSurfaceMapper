@@ -965,7 +965,7 @@ if __name__ == "__main__":
 
     print_results(c1, start_time)  # Print terminal output
 
-    if args.proxy:
+    if args.proxy != "NoProxy":
         try:
             del os.environ['http_proxy']
             del os.environ['https_proxy']
