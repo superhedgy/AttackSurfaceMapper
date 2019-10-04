@@ -91,7 +91,11 @@ def get_emails_for_company_name(mswitch, hostx, linkedin_username, linkedin_pass
         url = "https://www.linkedin.com/voyager/api/typeahead/hits?q=blended&query=%s" % company_name
         headers = {'Csrf-Token': 'ajax:0397788525211216808', 'X-RestLi-Protocol-Version': '2.0.0'}
         cookies['JSESSIONID'] = 'ajax:0397788525211216808'
-        r = requests.get(url, cookies=cookies, headers=headers)
+        if 'http_proxy' in os.environ:
+            r = requests.get(url, cookies=cookies, headers=headers,verify=False)
+        else:
+            r = requests.get(url, cookies=cookies, headers=headers)
+
         content = json.loads(r.text)
         firstID = 0
         for i in range(0, len(content['elements'])):
@@ -113,7 +117,10 @@ def get_emails_for_company_name(mswitch, hostx, linkedin_username, linkedin_pass
         company_id)
     headers = {'Csrf-Token': 'ajax:0397788525211216808', 'X-RestLi-Protocol-Version': '2.0.0'}
     cookies['JSESSIONID'] = 'ajax:0397788525211216808'
-    r = requests.get(url, cookies=cookies, headers=headers)
+    if 'http_proxy' in os.environ:
+        r = requests.get(url, cookies=cookies, headers=headers,verify=False)
+    else:
+        r = requests.get(url, cookies=cookies, headers=headers)
     content = json.loads(r.text)
     data_total = content['elements'][0]['total']
 
@@ -141,7 +148,10 @@ def get_emails_for_company_name(mswitch, hostx, linkedin_username, linkedin_pass
     for p in range(pages):
         url = "https://www.linkedin.com/voyager/api/search/cluster?count=40&guides=List(v->PEOPLE,facetCurrentCompany->%s)&origin=OTHER&q=guided&start=%i" % (
             company_id, p * 40)
-        r = requests.get(url, cookies=cookies, headers=headers)
+        if 'http_proxy' in os.environ:
+            r = requests.get(url, cookies=cookies, headers=headers,verify=False)
+        else:
+            r = requests.get(url, cookies=cookies, headers=headers)
         content = r.text.encode('UTF-8')
         content = json.loads(content)
 
