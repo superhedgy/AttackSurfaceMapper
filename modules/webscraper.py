@@ -9,7 +9,7 @@ import re
 # External Libraries
 import requests
 from bs4 import BeautifulSoup
-
+import os
 
 def extract_info(hostx):
     print("webscraper Enabled")
@@ -17,7 +17,10 @@ def extract_info(hostx):
     user_agent = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'}
     try:
-        response = requests.get(url, headers=user_agent)
+        if 'http_proxy' in os.environ:
+            response = requests.get(url, headers=user_agent,verify=False)
+        else:
+            response = requests.get(url, headers=user_agent)
 
         html_response = BeautifulSoup(response.text, 'html.parser')
 
