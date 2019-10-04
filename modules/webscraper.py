@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 #   Filename: webscraper.py
 #   Module: webscraper
-#   Author: Andreas Georgiou (@superhedgy)
+#   Author: Andreas Georgiou (@superhedgy) & Jacob Wilkin (Greenwolf @jacob_wilkin)
 
 # Standard Libraries
 import re
