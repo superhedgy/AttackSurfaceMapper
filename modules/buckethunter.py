@@ -1,13 +1,16 @@
 #!/usr/bin/python3
 #   Filename: buckethunter.py
 #   Module: BucketHunter
-#   Author: Andreas Georgiou (@superhedgy)
+#   Author: Andreas Georgiou (@superhedgy) & Jacob Wilkin (Greenwolf @jacob_wilkin)
 
 # External Libraries
 import colorama
 import requests
 from colorama import Fore, Style
 from tld import get_tld
+import traceback
+import os
+
 
 
 def cprint(type, msg, reset):
@@ -37,7 +40,12 @@ def passive_query(hostx, key):
     # print(keywords)
     par = {'access_token': key, 'keywords': keywords}
     try:
-        response = requests.get("https://buckets.grayhatwarfare.com/api/v1/buckets", params=par, timeout=4)
+        # Check if proxy is set, if it is dont verify ssl
+        if 'http_proxy' in os.environ:
+            response = requests.get("https://buckets.grayhatwarfare.com/api/v1/buckets", params=par, timeout=5,verify=False)
+        else:
+            response = requests.get("https://buckets.grayhatwarfare.com/api/v1/buckets", params=par, timeout=5)
+
         gwf_api = response.json()
 
         if gwf_api["buckets_count"] > 0:
@@ -49,11 +57,15 @@ def passive_query(hostx, key):
                 pass
 
     except:
-        cprint("error", "[*] Error: connecting with GrayHatWarfare API", 1)
+        cprint("error", "[*] Error: connecting with GrayHatWarfare API for Keywords Search", 1)
+        traceback.print_exc()
 
     par = {'access_token': key, 'keywords': hostx.orgName}
     try:
-        response = requests.get("https://buckets.grayhatwarfare.com/api/v1/buckets", params=par, timeout=4)
+        if 'http_proxy' in os.environ:
+            response = requests.get("https://buckets.grayhatwarfare.com/api/v1/buckets", params=par, timeout=5,verify=False)
+        else:
+            response = requests.get("https://buckets.grayhatwarfare.com/api/v1/buckets", params=par, timeout=5)
         gwf_api = response.json()
         if gwf_api["buckets_count"] > 0:
             try:
@@ -63,7 +75,8 @@ def passive_query(hostx, key):
                 pass
 
     except:
-        cprint("error", "[*] Error: connecting with GrayHatWarfare API", 1)
+        cprint("error", "[*] Error: connecting with GrayHatWarfare API for OrgName Search", 1)
+        traceback.print_exc()
 
 
 def active(mswitch, hostx, wordlist, recursive=False):
