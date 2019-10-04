@@ -162,6 +162,7 @@ def init_checks(master_switch, outpath):
     parser.add_argument("-V", "--version", help="Displays the current version.", action="store_true", default=False)
     parser.add_argument("-w", "--wordlist", help="Specify a list of subdomains.", type=str,
                         default="resources/bitquark_top100k_sublist.txt")
+    parser.add_argument("-p", "--proxy", help="Provide a HTTP Proxy for requests",dest='proxy', type=str,default="NoProxy")
     parser.add_argument("-sw", "--subwordlist", help="Specify a list of child subdomains.", type=str,
                         default="resources/top1000_sublist.txt")
     parser.add_argument("-e", "--expand", help="Expand the target list recursively.", action="store_true",
@@ -225,6 +226,17 @@ def init_checks(master_switch, outpath):
 
     print(Style.RESET_ALL)
 
+    if args.proxy:
+        if args.proxy != "NoProxy":
+            #operating_system = os.popen('uname -a | cut -d " " -f 1').read()
+            try:
+                os.environ['http_proxy'] = args.proxy 
+                #os.environ['HTTP_PROXY'] = args.proxy
+                os.environ['https_proxy'] = args.proxy
+                #os.environ['HTTPS_PROXY'] = args.proxy
+            except:
+                exit(1)
+
     # Checks for a Internet Connection
     try:
         socket.setdefaulttimeout(5)
@@ -271,7 +283,10 @@ def asn_expansion(mswitch, hostx):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'}
     api_endpoint = "https://api.bgpview.io/search?query_term=" + asn_query
     try:
-        response = requests.get(api_endpoint, headers=user_agent)
+        if 'http_proxy' in os.environ:
+            response = requests.get(api_endpoint, headers=user_agent,verify=False)
+        else:
+            response = requests.get(api_endpoint, headers=user_agent)
         api = json.loads(response.text)
     except:
         cprint("error", "Attack surface expansion failed.", 1)
@@ -314,8 +329,11 @@ def asn_expansion(mswitch, hostx):
         if len(asns) > 0:
             for asn in asns:
                 try:
-                    response2 = requests.get("https://api.bgpview.io/asn/{0}/prefixes".format(str(asn)),
-                                             headers=user_agent)
+                    if 'http_proxy' in os.environ:
+                        response2 = requests.get("https://api.bgpview.io/asn/{0}/prefixes".format(str(asn)),headers=user_agent,verify=False)
+                    else:
+                        response2 = requests.get("https://api.bgpview.io/asn/{0}/prefixes".format(str(asn)),headers=user_agent)
+
                     api2 = json.loads(response2.text)
                     # print(response2.text)
                     print(api2["data"]["ipv4_prefixes"])
@@ -427,61 +445,61 @@ def keyloader(keychain, master_switch):
         tmp = line.split()
         keychain[tmp[0]] = tmp[2].replace("\"", "")
 
-    print("{0}   HostHunter Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
+    print("{0}   HostHunter Module  : [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
     master_switch.hosthunter = True
 
     if args.screen_capture:
-        print("{0}   ScreenCapture Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
+        print("{0}   ScreenCapture Module   : [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
         master_switch.screencapture = True
     else:
-        print("{0}   ScreenCapture Module	: [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
+        print("{0}   ScreenCapture Module   : [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
         master_switch.screencapture = False
-    print("{0}   DNSdumpster Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN + Style.BRIGHT, Fore.WHITE, Style.RESET_ALL))
-    print("{0}   URLScanIO Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
+    print("{0}   DNSdumpster Module : [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN + Style.BRIGHT, Fore.WHITE, Style.RESET_ALL))
+    print("{0}   URLScanIO Module   : [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
 
     if len(keychain["linkedin_username"]) > 0 and len(keychain["linkedin_password"]) and args.linkedinner:
-        print("{0}   LinkedInner Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
+        print("{0}   LinkedInner Module : [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
         master_switch.linkedinner = True
     else:
-        print("{0}   LinkedInner Module	: [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
+        print("{0}   LinkedInner Module : [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
         master_switch.linkedinner = False
 
     if len(keychain["hunterio"]) == 40:
-        print("{0}   HunterIO Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
+        print("{0}   HunterIO Module    : [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
         master_switch.hunterio = True
     else:
-        print("{0}   HunterIO Module	: [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
+        print("{0}   HunterIO Module    : [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
         master_switch.hunterio = False
 
     if len(keychain["shodan"]) == 32:
-        print("{0}   Shodan Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
+        print("{0}   Shodan Module  : [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
         master_switch.shodan = True
     else:
-        print("{0}   Shodan Module	: [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
+        print("{0}   Shodan Module  : [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
         master_switch.shodan = False
 
     if len(keychain["virustotal"]) == 64:
         print(
-            "{0}   VirusTotal Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
+            "{0}   VirusTotal Module    : [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
         master_switch.virustotal = True
     else:
         print(
-            "{0}   VirusTotal Module	: [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
+            "{0}   VirusTotal Module    : [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
         master_switch.virustotal = False
 
     if len(keychain["weleakinfo_priv"]) == 40:
         print(
-            "{0}   WeLeakInfo Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
+            "{0}   WeLeakInfo Module    : [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
         master_switch.weleakinfo_private = True
     else:
-        print("   WeLeakInfo Module	: [Disabled]")
+        print("   WeLeakInfo Module : [Disabled]")
         master_switch.weleakinfo_private = False
 
     if args.expand:
-        print("{0}   SubHunter Module	: [{1}Recursive{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.YELLOW, Fore.WHITE, Style.RESET_ALL))
+        print("{0}   SubHunter Module   : [{1}Recursive{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.YELLOW, Fore.WHITE, Style.RESET_ALL))
         master_switch.subhunter = True
     else:
-        print("{0}   SubHunter Module	: [{1}Active{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
+        print("{0}   SubHunter Module   : [{1}Active{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
 
 
 # msave Function - Store output in MongoDB [UAT]
@@ -673,7 +691,7 @@ def main(keychain, switch, output_path, count):
         cprint("red", target_list[key].primary_domain, 1)
 
         for ip in target_list[key].resolved_ips:
-            cprint("white", "	|", 1)
+            cprint("white", "   |", 1)
             cprint("white", "  [{0}]".format(ip.address), 1)
 
         if switch.expand is True:
@@ -848,16 +866,16 @@ def main(keychain, switch, output_path, count):
                 break
 
         if target_list[key].mx is not None:
-            cprint("white", " || MX Records	:", 1)
+            cprint("white", " || MX Records :", 1)
             for dt in target_list[key].mx:
                 cprint("info", str(dt.exchange), 1)
 
         if target_list[key].spf is not None:
             if target_list[key].spf:
                 print(
-                    " {0}|| SPF	: {1}".format(Fore.WHITE, Fore.GREEN + str(target_list[key].spf) + Style.RESET_ALL))
+                    " {0}|| SPF : {1}".format(Fore.WHITE, Fore.GREEN + str(target_list[key].spf) + Style.RESET_ALL))
             else:
-                print(" {0}|| SPF	: {1}".format(Fore.WHITE, Fore.RED + Style.BRIGHT + str(
+                print(" {0}|| SPF   : {1}".format(Fore.WHITE, Fore.RED + Style.BRIGHT + str(
                     target_list[key].spf) + Style.RESET_ALL))
 
         if len(target_list[key].dmarc) > 0:
@@ -880,19 +898,19 @@ def main(keychain, switch, output_path, count):
             print("")
             print(Fore.WHITE + " [-] IP Address: " + Style.BRIGHT + Fore.YELLOW + str(ip.address) + Style.RESET_ALL)
             if ip.hostname:
-                print(Fore.WHITE + " 	|| Hostname: " + Fore.YELLOW + ','.join(map(str, ip.hostname)) + Style.RESET_ALL)
+                print(Fore.WHITE + "    || Hostname: " + Fore.YELLOW + ','.join(map(str, ip.hostname)) + Style.RESET_ALL)
             if ip.server:
-                print(Fore.WHITE + " 	|| Server: " + Fore.YELLOW + ip.server)
+                print(Fore.WHITE + "    || Server: " + Fore.YELLOW + ip.server)
             if ip.ports:
-                print(Fore.WHITE + " 	|| Ports: " + Fore.YELLOW + '/tcp, '.join(map(str, ip.ports)) + "/tcp" + Style.RESET_ALL)
+                print(Fore.WHITE + "    || Ports: " + Fore.YELLOW + '/tcp, '.join(map(str, ip.ports)) + "/tcp" + Style.RESET_ALL)
             if ip.vulns:
-                print(Fore.WHITE + " 	|| Possible Vulnerabities: " + Fore.YELLOW + ','.join(map(str, ip.vulns)) + Style.RESET_ALL)
+                print(Fore.WHITE + "    || Possible Vulnerabities: " + Fore.YELLOW + ','.join(map(str, ip.vulns)) + Style.RESET_ALL)
             if ip.location:
-                print(Fore.WHITE + " 	|| Location: " + Fore.YELLOW + ip.location + Style.RESET_ALL)
-            print(Fore.WHITE + " 	|| ASN: " + Fore.YELLOW + ip.asn + Style.RESET_ALL)
+                print(Fore.WHITE + "    || Location: " + Fore.YELLOW + ip.location + Style.RESET_ALL)
+            print(Fore.WHITE + "    || ASN: " + Fore.YELLOW + ip.asn + Style.RESET_ALL)
             if ip.asn_name:
-                print(Fore.WHITE + " 	|| ASN Name: " + Fore.YELLOW + str(ip.asn_name) + Style.RESET_ALL)
-            print(Fore.WHITE + " 	|| CIDR: " + Fore.YELLOW + ip.cidr + Style.RESET_ALL)
+                print(Fore.WHITE + "    || ASN Name: " + Fore.YELLOW + str(ip.asn_name) + Style.RESET_ALL)
+            print(Fore.WHITE + "    || CIDR: " + Fore.YELLOW + ip.cidr + Style.RESET_ALL)
             print("")
             if ip.ports:
                 count.ports += len(ip.ports)
@@ -946,5 +964,12 @@ if __name__ == "__main__":
     main(keychain, sw1, output_path, c1)
 
     print_results(c1, start_time)  # Print terminal output
+
+    if args.proxy:
+        try:
+            del os.environ['http_proxy']
+            del os.environ['https_proxy']
+        except:
+            pass
 
     exit()
