@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 #   Filename: subhunter.py
 #   Module: SubHunter
-#   Author: Andreas Georgiou (@superhedgy)
+#   Author: Andreas Georgiou (@superhedgy) & Jacob Wilkin (Greenwolf @jacob_wilkin)
 
 # Standard Libraries
 import colorama
@@ -12,6 +12,7 @@ from colorama import Fore, Style
 from validator_collection import checkers
 
 from modules import subbrute
+import os
 
 
 class TargetIP:
@@ -53,7 +54,12 @@ def cprint(type, msg, reset):
 def passive_query(hostx, key):
     par = {'apikey': key, 'domain': hostx.primary_domain}
     try:
-        response = requests.get("https://www.virustotal.com/vtapi/v2/domain/report", params=par, timeout=4)
+        if 'http_proxy' in os.environ:
+            response = requests.get("https://www.virustotal.com/vtapi/v2/domain/report", params=par, timeout=4,verify=False)
+        else:
+            response = requests.get("https://www.virustotal.com/vtapi/v2/domain/report", params=par, timeout=4)
+
+
         tv_api = response.json()
 
         try:
