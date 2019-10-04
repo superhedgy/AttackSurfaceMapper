@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 #   Filename: linkedinner.py
 #   Module: LinkedInner 
-#   Author: Jacob Wilkin & Andreas Georgiou (@superhedgy)
+#   Author: Jacob Wilkin (Greenwolf @jacob_wilkin) & Andreas Georgiou (@superhedgy)
 #   Credits: linkedint & @greenwolf
 
 # Standard Libraries
