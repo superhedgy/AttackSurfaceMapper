@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 #   Filename: hunterio.py
 #   Module: HunterIO
-#   Author: Andreas Georgiou (@superhedgy)
+#   Author: Andreas Georgiou (@superhedgy) & Jacob Wilkin (Greenwolf @jacob_wilkin)
 # https://api.hunter.io/v2/domain-search?domain=
 
 # Standard Libraries
