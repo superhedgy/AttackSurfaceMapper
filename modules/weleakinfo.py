@@ -12,7 +12,7 @@ import traceback
 import requests
 
 import asm
-
+import os
 
 def query(hostx, api_key, priv_key):
     head = {
@@ -27,7 +27,10 @@ def query(hostx, api_key, priv_key):
     for email in hostx.emails:
         try:
             url = "https://api.weleakinfo.com/v3/public/email/" + email
-            response = requests.get(url, headers=head)
+            if 'http_proxy' in os.environ:
+                response = requests.get(url, headers=head,verify=False)
+            else:
+                response = requests.get(url, headers=head)
 
             if not (response.status_code == 200):
                 return -1
