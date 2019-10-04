@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 #   Filename: shodan.py
 #   Module: Shodan
-#   Authors: Andreas Georgiou (@superhedgy)
-#            Jacob Wilkin (@greenwolf)
+#   Authors: Jacob Wilkin (Greenwolf @jacob_wilkin)
+#            Andreas Georgiou (@superhedgy)
 
 # Standard Libraries
 import time
@@ -12,7 +12,16 @@ import shodan
 
 
 def port_scan(hostx, key, counter):
-    api = shodan.Shodan(key)
+    if 'http_proxy' in os.environ:
+        try:
+            proxy_dict = {'https':os.environ['http_proxy']}
+            #proxy_dict = {'http':os.environ['http_proxy'],'https':os.environ['http_proxy']}
+            #print(proxy_dict)
+            api = shodan.Shodan(key,proxies=proxy_dict)
+        except:
+            traceback.print_exc()
+    else:
+        api = shodan.Shodan(key)
     numports = 0
 
     for IP in hostx.resolved_ips:
