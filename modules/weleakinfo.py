@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 #   Filename: weleakinfo.py
 #   Module: WeLeakInfo Module
-#   Author: Andreas Georgiou (@superhedgy)
+#   Author: Andreas Georgiou (@superhedgy) & Jacob Wilkin (Greenwolf @jacob_wilkin)
 
 # Standard Libraries
 import json
