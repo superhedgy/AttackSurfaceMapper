@@ -36,6 +36,8 @@ Register and obtain an API key from:
 * [LinkedIn](https://www.linkedin.com/start/join)  
 * [GrayHatWarfare](https://buckets.grayhatwarfare.com/register)  
 
+
+Edit and enter the keys in keylist file
 ```
 $ nano keylist.asm
 ```
