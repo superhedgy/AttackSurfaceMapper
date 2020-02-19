@@ -80,7 +80,7 @@ def passive_query(hostx, key):
 def active(mswitch, hostx, wordlist, subwordlist, recursive=False):
     for d in subbrute.run(hostx.primary_domain, subdomains=wordlist):
         added_ips = []
-        if (d[0] in hostx.subdomains) or (d[0] is hostx.primary_domain) or ("REFUSED" in d[1]) or ("NOERROR" in d[1]):
+        if (d[0] in hostx.subdomains) or (d[0] is hostx.primary_domain) or ("REFUSED" in d[1]) or ("NOERROR" in d[1]) or ("NXDOMAIN" in d[1]):
             pass
         else:
             # Verbose Mode
@@ -102,7 +102,7 @@ def active(mswitch, hostx, wordlist, subwordlist, recursive=False):
         for sub in hostx.subdomains:
             cprint("info", "[i] Enumerating: xxx." + sub, 1)
             for item in subbrute.run(sub, query_type="A", subdomains=subwordlist, process_count=60):
-                if item[0] in hostx.subdomains or ("REFUSED" in item[1]) or ("NOERROR" in item[1]):
+                if item[0] in hostx.subdomains or ("REFUSED" in item[1]) or ("NOERROR" in item[1]) or ("NXDOMAIN" in d[1]):
                     pass
                 else:
                     # Verbose Mode

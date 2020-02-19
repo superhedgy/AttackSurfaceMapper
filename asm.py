@@ -429,7 +429,7 @@ def keyloader(keychain, master_switch):
             keychain[words[0]] = words[2].replace("\"", "")
         except:
             pass
-            
+
     print("{0}   HostHunter Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
     master_switch.hosthunter = True
 
