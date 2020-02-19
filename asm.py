@@ -46,12 +46,12 @@ from modules import screencapture
 from modules import shodan
 from modules import subhunter
 from modules import urlscanio
-from modules import weleakinfo
+# from modules import weleakinfo
 from modules import whois_collector
 
 # Constants
 __author__ = " Andreas Georgiou (@superhedgy)\n\t Jacob Wilkin (@greenwolf)"
-__version__ = "v1.0"
+__version__ = "v1.1"
 
 
 # Classes
@@ -201,7 +201,7 @@ def init_checks(master_switch, outpath):
         cprint("error", "Wordlist file argument is empty", 1)
         exit()
 
-    if args.subwordlist is None or args.subwordlist is "":
+    if args.subwordlist is None or args.subwordlist == "":
         cprint("error", "Wordlist file argument is empty", 1)
         exit()
 
@@ -279,7 +279,7 @@ def asn_expansion(mswitch, hostx):
     asns = []
     prefixes = []
 
-    if response.status_code is 200:
+    if response.status_code == 200:
         try:
             for item in api['data']['asns']:
                 # print (item)
@@ -319,7 +319,7 @@ def asn_expansion(mswitch, hostx):
                     api2 = json.loads(response2.text)
                     # print(response2.text)
                     print(api2["data"]["ipv4_prefixes"])
-                    if response2.status_code is 200:
+                    if response2.status_code == 200:
                         try:
                             for item in api2["data"]["ipv4_prefixes"]:
                                 # print (item)
@@ -424,9 +424,12 @@ def keyloader(keychain, master_switch):
     keyfile = open("keylist.asm", "rt")  # Read keylist.asm File
 
     for line in keyfile:
-        tmp = line.split()
-        keychain[tmp[0]] = tmp[2].replace("\"", "")
-
+        words = line.split()
+        try:
+            keychain[words[0]] = words[2].replace("\"", "")
+        except:
+            pass
+            
     print("{0}   HostHunter Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
     master_switch.hosthunter = True
 
@@ -469,13 +472,13 @@ def keyloader(keychain, master_switch):
             "{0}   VirusTotal Module	: [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
         master_switch.virustotal = False
 
-    if len(keychain["weleakinfo_priv"]) == 40:
-        print(
-            "{0}   WeLeakInfo Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
-        master_switch.weleakinfo_private = True
-    else:
-        print("   WeLeakInfo Module	: [Disabled]")
-        master_switch.weleakinfo_private = False
+#    if len(keychain["weleakinfo_priv"]) == 40:
+#        print(
+#            "{0}   WeLeakInfo Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
+#        master_switch.weleakinfo_private = True
+#    else:
+#        print("   WeLeakInfo Module	: [Disabled]")
+#        master_switch.weleakinfo_private = False
 
     if args.expand:
         print("{0}   SubHunter Module	: [{1}Recursive{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.YELLOW, Fore.WHITE, Style.RESET_ALL))
@@ -615,8 +618,8 @@ def print_results(count1, stime):
     print(" {0} Subdomains".format(Fore.RED + Style.BRIGHT + str(count1.subdomains) + Style.RESET_ALL + Fore.WHITE))
     print(" {0} Vulnerabities".format(Fore.RED + Style.BRIGHT + str(count1.vulns) + Style.RESET_ALL + Fore.WHITE))
     print(Fore.WHITE + Style.BRIGHT + "\n[%] Intelligence Extracted:" + Style.RESET_ALL)
-    print(" {0} WeLeakInfo Credentials".format(
-        Fore.RED + Style.BRIGHT + str(count1.creds) + Style.RESET_ALL + Fore.WHITE))
+    #print(" {0} WeLeakInfo Credentials".format(
+    #    Fore.RED + Style.BRIGHT + str(count1.creds) + Style.RESET_ALL + Fore.WHITE))
     print(" {0} Emlpoyees' Details".format(
         Fore.RED + Style.BRIGHT + str(count1.employees) + Style.RESET_ALL + Fore.WHITE))
     print(" {0} AWS Buckets Discovered".format(
@@ -636,7 +639,6 @@ def main(keychain, switch, output_path, count):
     validated_input = []
     targets = []
     target_list = dict()  # Creates a Dict of targets
-    unsorted_ips = dict()  # Creates a Dict of Unsorted IPs
     if args.target:
         targets.append(args.target)
     else:
@@ -752,9 +754,9 @@ def main(keychain, switch, output_path, count):
             else:
                 cprint("error", "Linkedinner module has been disabled. No valid input was detected.", 1)
 
-        if switch.weleakinfo_private is True:
-            weleakinfo.query(target_list[key], keychain["weleakinfo"], keychain["weleakinfo_priv"])  # Passive
-            weleakinfo.priv_api(target_list[key], keychain["weleakinfo"], keychain["weleakinfo_priv"])  # Passive
+#        if switch.weleakinfo_private is True:
+#            weleakinfo.query(target_list[key], keychain["weleakinfo"], keychain["weleakinfo_priv"])  # Passive
+#            weleakinfo.priv_api(target_list[key], keychain["weleakinfo"], keychain["weleakinfo_priv"])  # Passive
 
         if len(target_list[key].subdomains) > 0:
             print(Fore.WHITE + " || Subdomains: " + Fore.YELLOW + str(
@@ -803,30 +805,30 @@ def main(keychain, switch, output_path, count):
                 else:
                     cprint("info", ",", 0)
 
-        if len(target_list[key].breaches) > 0:
-            cprint("white", " || WeLeakInfo Data Breaches: ", 1)
-            for email, breach in target_list[key].breaches.items():
-                cprint("yellow", "{0} : {1}".format(email, breach), 1)
+    #    if len(target_list[key].breaches) > 0:
+    #        cprint("white", " || WeLeakInfo Data Breaches: ", 1)
+#            for email, breach in target_list[key].breaches.items():
+#                cprint("yellow", "{0} : {1}".format(email, breach), 1)
 
-        if len(target_list[key].creds) > 0:
-            cprint("white", " || WeLeakInfo Credentials Discovered: ", 0)
-            cprint("info", "" + str(len(target_list[key].creds)), 1)
-            for i in range(len(target_list[key].creds)):
-                cprint("yellow", target_list[key].creds[i], 1)
-                if i > 8:
-                    if len(target_list[key].creds) > 8:
-                        cprint("yellow", "...", 1)
-                    break
+#        if len(target_list[key].creds) > 0:
+#            cprint("white", " || WeLeakInfo Credentials Discovered: ", 0)
+#            cprint("info", "" + str(len(target_list[key].creds)), 1)
+#            for i in range(len(target_list[key].creds)):
+#                cprint("yellow", target_list[key].creds[i], 1)
+#                if i > 8:
+#                    if len(target_list[key].creds) > 8:
+#                        cprint("yellow", "...", 1)
+#                    break
 
-        if len(target_list[key].hashes) > 0:
-            cprint("white", " || WeLeakInfo Hashes Discovered: ", 0)
-            cprint("info", "" + str(len(target_list[key].hashes)), 1)
-            for i in range(len(target_list[key].hashes)):
-                cprint("yellow", target_list[key].hashes[i], 1)
-                if i > 8:
-                    if len(target_list[key].hashes) > 5:
-                        cprint("yellow", "...", 1)
-                    break
+#        if len(target_list[key].hashes) > 0:
+#            cprint("white", " || WeLeakInfo Hashes Discovered: ", 0)
+#            cprint("info", "" + str(len(target_list[key].hashes)), 1)
+#            for i in range(len(target_list[key].hashes)):
+#                cprint("yellow", target_list[key].hashes[i], 1)
+#                if i > 8:
+#                    if len(target_list[key].hashes) > 5:
+#                        cprint("yellow", "...", 1)
+#                    break
 
         if len(target_list[key].buckets) > 0:
             cprint("white", " || AWS Buckets Discovered: ", 0)
@@ -838,8 +840,7 @@ def main(keychain, switch, output_path, count):
                         cprint("yellow", "\n...", 1)
                     break
 
-        print(" {0}|| DNS Records : {1}".format(Fore.WHITE,
-                                                Fore.YELLOW + str(len(target_list[key].dnsrecords)) + Style.RESET_ALL))
+        print(" {0}|| DNS Records : {1}".format(Fore.WHITE, Fore.YELLOW + str(len(target_list[key].dnsrecords)) + Style.RESET_ALL))
         for i in range(len(target_list[key].dnsrecords)):
             cprint("yellow", target_list[key].dnsrecords[i], 1)
             if i > 2:

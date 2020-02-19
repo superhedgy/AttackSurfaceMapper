@@ -79,6 +79,7 @@ def passive_query(hostx, key):
 
 def active(mswitch, hostx, wordlist, subwordlist, recursive=False):
     for d in subbrute.run(hostx.primary_domain, subdomains=wordlist):
+        added_ips = []
         if (d[0] in hostx.subdomains) or (d[0] is hostx.primary_domain) or ("REFUSED" in d[1]) or ("NOERROR" in d[1]):
             pass
         else:
@@ -86,11 +87,11 @@ def active(mswitch, hostx, wordlist, subwordlist, recursive=False):
             if mswitch.verbose is True:
                 print(d[0] + "," + d[1] + "," + d[2])
             hostx.subdomains.append(d[0])
-            if d[1] is "A":
-                if checkers.is_ipv4(d[2]):
-                    if ipaddress.ip_address(d[2]).is_private is False:
-                        tmp = TargetIP(d[2])
-                        tmp.hostname.append(d[0])
+            if d[1] is "A" or d[1] is "MX":
+                if checkers.is_ipv4(d[2]) and (ipaddress.ip_address(d[2]) is False):
+                    tmp = TargetIP(d[2])
+                    tmp.hostname.append(d[0])
+                    if not d[2] in added_ips:
                         hostx.resolved_ips.append(tmp)
                         cprint("white", "	|", 1)
                         cprint("white", "  [{0}]".format(d[2]), 1)
@@ -100,7 +101,7 @@ def active(mswitch, hostx, wordlist, subwordlist, recursive=False):
     if recursive is True:
         for sub in hostx.subdomains:
             cprint("info", "[i] Enumerating: xxx." + sub, 1)
-            for item in subbrute.run(sub, query_type="A", subdomains=subwordlist, process_count=50):
+            for item in subbrute.run(sub, query_type="A", subdomains=subwordlist, process_count=60):
                 if item[0] in hostx.subdomains or ("REFUSED" in item[1]) or ("NOERROR" in item[1]):
                     pass
                 else:
