@@ -1,0 +1,6 @@
+virustotal = ""
+hunterio = ""
+shodan = ""
+linkedin_username = ""
+linkedin_password = ""
+grayhatwarfare = ""
