@@ -145,6 +145,7 @@ def showbanner():
     exit
 
 
+# Initial Checks & Argument Parsing
 def init_checks(master_switch, outpath):
     global args
     # Argument Parser
@@ -170,13 +171,8 @@ def init_checks(master_switch, outpath):
                         action="store_true", default=False)
     parser.add_argument("-v", "--verbose", help="Verbose ouput in the terminal window.", action="store_true",
                         default=False)
-
     args = parser.parse_args()
 
-    #    if args.format.lower() != "txt" and args.format.lower() != "csv":
-    #        print ("\nUnrecognised file format argument. Choose between 'txt' or 'csv' output file formats.\n")
-    #        print("Example Usage: python3 asm.py targets.txt -f txt ")
-    #        exit()
 
     if not (args.target or args.targets):
         cprint("error", "Please specify a single target or a list of targets.", 1)
@@ -225,19 +221,7 @@ def init_checks(master_switch, outpath):
 
     print(Style.RESET_ALL)
 
-    # Checks for a Internet Connection
-    try:
-        socket.setdefaulttimeout(5)
-        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("8.8.8.8", 53))  # Google DNS IPv4
-    except:
-        try:
-            socket.setdefaulttimeout(8)
-            socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("208.69.38.205", 53))  # OpenDNS IPv4
-        except:
-            cprint("white", "\n" + 82 * "*", 0)
-            cprint("error", "No Internet Connection! Ensure that you are online and run ASM again.", 0)
-            print(82 * "*" + "\n")
-            exit(1)
+    amionline()
 
     if args.expand:
         cprint("info", "\n[!] Expand Mode Enabled, out-of-scope targets might be included.\n", 1)  # Success Msg
@@ -255,6 +239,23 @@ mongo_client = pymongo.MongoClient('localhost', 27017)
 db = mongo_client.asm
 store_targets = db.targets
 
+# Checks for an Internet Connection
+def amionline():
+    try:
+        socket.setdefaulttimeout(5)
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("8.8.8.8", 53))  # Google DNS IPv4
+    except:
+        cprint("white", "\n" + 82 * "*", 0)
+        cprint("error", "No Internet Connection! Ensure that you are online and run ASM again.", 0)
+        print(82 * "*" + "\n")
+        while 1:
+            try:
+                socket.setdefaulttimeout(8)
+                socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("8.8.4.4", 53))  # OpenDNS IPv4
+                return True
+            except:
+                input("[>] Press any key to resume . . .")
+    return True
 
 # Resolve Domain Function - Returns a list
 def asn_expansion(mswitch, hostx):
