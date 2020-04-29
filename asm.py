@@ -555,7 +555,7 @@ def store_results(hostx, output_path):
     dns_filepath = results_path + "/" + 'dns_records.txt'
     dns_file = open(dns_filepath, 'w')
 
-    employees_filepath = results_path + "/" + 'employees.txt'
+    employees_filepath = results_path + "/" + 'employees.csv'
     employees_file = open(employees_filepath, 'w')
 
     targetips_filepath = results_path + "/" + 'target_ips.csv'
@@ -600,9 +600,9 @@ def store_results(hostx, output_path):
         spoofchecks_file.write(record + '\n')
 
     if len(hostx.employees) > 0:
-            employees_file.write("Email Address" + "," + "Full Name" + "," + "First Name" + "," + "Last Name" + "," + "LinkedIn Profile URL" + "\n")
+            employees_file.write("\"" + "Email Address" + "\",\"" + "Full Name" + "\",\"" + "First Name" + "\",\"" + "Last Name" + "\",\"" + "LinkedIn Profile URL" + "\"\n")
         for employee in hostx.employees:
-            employees_file.write(employee[0] + "," + employee[1] + "," + employee[2] + "," + employee[3] + "," + employee[4] + "\n")
+            employees_file.write("\"" + employee[0] + "\",\"" + employee[1] + "\",\"" + employee[2] + "\",\"" + employee[3] + "\",\"" + employee[4] + "\"\n")
 
     # Write Header
     targetips_file.write(
