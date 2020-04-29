@@ -600,7 +600,7 @@ def store_results(hostx, output_path):
         spoofchecks_file.write(record + '\n')
 
     if len(hostx.employees) > 0:
-            employees_file.write("\"" + "Email Address" + "\",\"" + "Full Name" + "\",\"" + "First Name" + "\",\"" + "Last Name" + "\",\"" + "LinkedIn Profile URL" + "\"\n")
+        employees_file.write("\"" + "Email Address" + "\",\"" + "Full Name" + "\",\"" + "First Name" + "\",\"" + "Last Name" + "\",\"" + "LinkedIn Profile URL" + "\"\n")
         for employee in hostx.employees:
             employees_file.write("\"" + employee[0] + "\",\"" + employee[1] + "\",\"" + employee[2] + "\",\"" + employee[3] + "\",\"" + employee[4] + "\"\n")
 
