@@ -537,6 +537,9 @@ def store_results(hostx, output_path):
     emails_filepath = results_path + "/" + 'emails.txt'
     emails_file = open(emails_filepath, 'w')
 
+    g_emails_filepath = results_path + "/" + 'guessed_emails.txt'
+    g_emails_file = open(g_emails_filepath, 'w')
+
     usernames_filepath = results_path + "/" + 'usernames.txt'
     usernames_file = open(usernames_filepath, 'w')
 
@@ -585,16 +588,21 @@ def store_results(hostx, output_path):
     for bucket in hostx.buckets:
         buckets_file.write(bucket + '\n')
 
+    for gemail in hostx.guessed_emails:
+        g_emails_file.write(gemail + '\n')
+
     spoofchecks_file.write("Target : " + hostx.primary_domain + '\n')
     spoofchecks_file.write("SPF : " + str(hostx.spf) + '\n')
     spoofchecks_file.write("DMARC Status : " + hostx.dmarc_status + '\n')
     spoofchecks_file.write("DMARC Record : " + '\n')
+
     for record in hostx.dmarc:
         spoofchecks_file.write(record + '\n')
 
     if len(hostx.employees) > 0:
+            employees_file.write("Email Address" + "," + "Full Name" + "," + "First Name" + "," + "Last Name" + "," + "LinkedIn Profile URL" + "\n")
         for employee in hostx.employees:
-            employees_file.write(employee[0] + "," + employee[1] + "," + employee[2] + "," + employee[3] + "\n")
+            employees_file.write(employee[0] + "," + employee[1] + "," + employee[2] + "," + employee[3] + "," + employee[4] + "\n")
 
     # Write Header
     targetips_file.write(
@@ -621,7 +629,7 @@ def print_results(count1, stime):
     print(Fore.WHITE + Style.BRIGHT + "\n[%] Intelligence Extracted:" + Style.RESET_ALL)
     #print(" {0} WeLeakInfo Credentials".format(
     #    Fore.RED + Style.BRIGHT + str(count1.creds) + Style.RESET_ALL + Fore.WHITE))
-    print(" {0} Emlpoyees' Details".format(
+    print(" {0} Employees' Details".format(
         Fore.RED + Style.BRIGHT + str(count1.employees) + Style.RESET_ALL + Fore.WHITE))
     print(" {0} AWS Buckets Discovered".format(
         Fore.RED + Style.BRIGHT + str(count1.buckets) + Style.RESET_ALL + Fore.WHITE))
@@ -678,7 +686,7 @@ def main(keychain, switch, output_path, count):
         for ip in target_list[key].resolved_ips:
             cprint("white", "	|", 1)
             cprint("white", "  [{0}]".format(ip.address), 1)
-
+        print("HERE 0")
         if switch.expand is True:
             subhunter.active(switch, target_list[key], args.wordlist, args.subwordlist, recursive=True)  # Passive
         else:
@@ -688,17 +696,18 @@ def main(keychain, switch, output_path, count):
         # HTTP Based
         if switch.stealth is False:
             hosthunter.active(target_list[key], count)  # Active
-
+        print("HERE 1")
         # IP Based
         if switch.shodan is True:
             shodan.port_scan(target_list[key], keychain["shodan"], count)  # Passive
+        print("HERE 2")
 
         if switch.whois_collector is True and switch.stealth is False:
             whois_collector.wlookup(target_list[key])  # Active
-
+        print("HERE 3")
         # hosthunter.query_api(target_list[key]) # Passive
         hosthunter.org_finder(target_list[key])  # Passive
-
+        print("HERE")
         buckethunter.passive_query(target_list[key], keychain["grayhatwarfare"])  # Passive
 
         if switch.expand is True:
@@ -735,7 +744,7 @@ def main(keychain, switch, output_path, count):
             if answer2.isdigit() and len(answer2) > 0:
                 cprint("info", "  [i] Searching Linkedin with CompanyID: " + answer2, 1)
                 # LinkedInUsername, linkedin_password, company_name, companyid
-                # BBC 1762
+
                 linkedinner.get_emails_for_company_name(switch, target_list[key], keychain["linkedin_username"],
                                                         keychain["linkedin_password"], "", answer2)
             elif not answer2.isdigit() and len(answer2) > 0:
