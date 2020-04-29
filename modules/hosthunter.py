@@ -102,8 +102,11 @@ def dnslookup(hostx):
             # Add API count exceed detection
             for record in hostx.dnsrecords:
                 word = record.rsplit('\t')
-                if (word[4] == "TXT") and ("v=spf1" in word[5]):
-                    hostx.spf = True
+                try:
+                    if (word[4] == "TXT") and ("v=spf1" in word[5]):
+                        hostx.spf = True
+                except:
+                    pass
             if hostx.spf is None:
                 hostx.spf = False
         else:
