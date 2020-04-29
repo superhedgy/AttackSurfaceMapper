@@ -12,7 +12,7 @@ from colorama import Fore, Style
 from validator_collection import checkers
 
 from modules import subbrute
-
+from subprocess import STDOUT, check_output
 
 class TargetIP:
     def __init__(self, addr):
@@ -78,9 +78,13 @@ def passive_query(hostx, key):
 
 
 def active(mswitch, hostx, wordlist, subwordlist, recursive=False):
-    for d in subbrute.run(hostx.primary_domain, subdomains=wordlist):
+    print("HERE 0.1")
+    results=subbrute.run(hostx.primary_domain, subdomains=wordlist)
+    print("HERE 0.11")
+    for d in results:
+        print("[DEBUG][time] Item Discovered: ",d)
         added_ips = []
-        if (d[0] in hostx.subdomains) or (d[0] is hostx.primary_domain) or ("REFUSED" in d[1]) or ("NOERROR" in d[1]) or ("NXDOMAIN" in d[1]):
+        if (d[0] in hostx.subdomains) or (d[0] is hostx.primary_domain) or ("REFUSED" in d[1]) or ("NOERROR" in d[1]) or ("NXDOMAIN" in d[1]) or ("HINFO" in d[1]):
             pass
         else:
             # Verbose Mode
@@ -97,12 +101,13 @@ def active(mswitch, hostx, wordlist, subwordlist, recursive=False):
                         cprint("white", "  [{0}]".format(d[2]), 1)
                         if mswitch.verbose is True:
                             cprint("info", "[i] Adding target IPv4:" + d[2], 1)
+    return True
 
     if recursive is True:
         for sub in hostx.subdomains:
             cprint("info", "[i] Enumerating: xxx." + sub, 1)
             for item in subbrute.run(sub, query_type="A", subdomains=subwordlist, process_count=60):
-                if item[0] in hostx.subdomains or ("REFUSED" in item[1]) or ("NOERROR" in item[1]) or ("NXDOMAIN" in d[1]) or ("HFINFO" in item[1]):
+                if item[0] in hostx.subdomains or ("REFUSED" in item[1]) or ("NOERROR" in item[1]) or ("NXDOMAIN" in d[1]) or ("HINFO" in item[1]):
                     pass
                 else:
                     # Verbose Mode
