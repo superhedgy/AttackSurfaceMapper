@@ -21,8 +21,6 @@ context.verify_mode = ssl.CERT_OPTIONAL
 context.load_default_certs()
 
 
-# socket.setdefaulttimeout(3)
-
 # ssl_grabber Function
 def ssl_grabber(resolved_ip, port):
     try:
@@ -103,7 +101,7 @@ def dnslookup(hostx):
             for record in hostx.dnsrecords:
                 word = record.rsplit('\t')
                 try:
-                    if (word[4] == "TXT") and ("v=spf1" in word[5]):
+                    if (word[0] == "TXT") and ("v=spf1" in word[1]):
                         hostx.spf = True
                 except:
                     pass
