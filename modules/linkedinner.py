@@ -46,7 +46,7 @@ def login(linkedin_username, linkedin_password):
     try:
         cookie = cookiejar._cookies['.www.linkedin.com']['/']['li_at'].value
     except:
-        print("[DEBUG] Cookie Value")
+        print("[DEBUG] Cookie Value: ",cookie)
         return
     cookiejar.save()
     os.remove(cookie_filename)
@@ -58,9 +58,9 @@ def authenticate(linkedin_username, linkedin_password):
         a = login(linkedin_username, linkedin_password)
         session = a
         if len(session) == 0:
-            asm.cprint("error", "Unable to login to LinkedIn.com!", 1)
+            asm.cprint("error", " Unable to login to LinkedIn.com!", 1)
             return
-        asm.cprint("info", "  [i] Obtained a new LinkedIn session.", 1)
+        asm.cprint("info", "[i] Obtained a new LinkedIn session.", 1)
         cookies = dict(li_at=session)
     except Exception as e:
         asm.cprint("error", "Could not authenticate to LinkedIn. %s" % e, 1)
@@ -146,8 +146,7 @@ def get_emails_for_company_name(mswitch, hostx, linkedin_username, linkedin_pass
         content = json.loads(content)
 
         if mswitch.verbose is True:
-            sys.stdout.write(
-                "\r[i] Fetching page %i/%i with %i results..." % ((p), pages, len(content['elements'][0]['elements'])))
+            sys.stdout.write("\r[i] Fetching page %i/%i with %i results..." % ((p), pages, len(content['elements'][0]['elements'])))
             sys.stdout.flush()
         # code to get users, for each user with a picture create a person
         for c in content['elements'][0]['elements']:
@@ -175,12 +174,14 @@ def get_emails_for_company_name(mswitch, hostx, linkedin_username, linkedin_pass
                                c['hitInfo']['com.linkedin.voyager.search.SearchProfile']['miniProfile'][
                                    'publicIdentifier']
                     linkedin = trans(linkedin)
-                    hostx.employees.append((first_name, last_name, full_name, linkedin))
+
                     email_syntax = hostx.pattern.replace("{f}", first_name[0]).replace("{first}", first_name).replace(
                         "{l}", last_name[0]).replace("{last}", last_name)
                     user_email = email_syntax + "@" + hostx.primary_domain
 
-                    if checkers.is_email(user_email) and (user_email not in hostx.guessed_emails):
+                    hostx.employees.append((user_email,full_name,first_name,last_name,linkedin))
+
+                    if checkers.is_email(user_email) and (user_email not in hostx.emails):
                         hostx.guessed_emails.append(user_email)
 
                 except Exception as e:

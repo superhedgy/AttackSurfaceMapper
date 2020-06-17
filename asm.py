@@ -742,17 +742,17 @@ def main(keychain, switch, output_path, count):
             answer2 = input(
                 Fore.WHITE + "[" + Fore.RED + Style.BRIGHT + ">" + Style.RESET_ALL + Fore.WHITE + "]" + Fore.WHITE + " Enter Company Name / Company ID: ")
             if answer2.isdigit() and len(answer2) > 0:
-                cprint("info", "  [i] Searching Linkedin with CompanyID: " + answer2, 1)
+                cprint("info", "[i] Searching Linkedin with CompanyID: " + answer2, 1)
                 # LinkedInUsername, linkedin_password, company_name, companyid
 
                 linkedinner.get_emails_for_company_name(switch, target_list[key], keychain["linkedin_username"],
                                                         keychain["linkedin_password"], "", answer2)
             elif not answer2.isdigit() and len(answer2) > 0:
-                cprint("info", "  [i] Searching Linkedin with Company Name: " + answer2, 1)
+                cprint("info", "[i] Searching Linkedin with Company Name: " + answer2, 1)
                 linkedinner.get_emails_for_company_name(switch, target_list[key], keychain["linkedin_username"],
                                                         keychain["linkedin_password"], answer2, 0)
             elif len(target_list[key].orgName) > 0:
-                cprint("info", "  [i] Searching Linkedin with Company Name: " + target_list[key].orgName.replace(",",
+                cprint("info", "[i] Searching Linkedin with Company Name: " + target_list[key].orgName.replace(",",
                                                                                                                  "").replace(
                     ".", ""), 1)
                 answer2 = str(
