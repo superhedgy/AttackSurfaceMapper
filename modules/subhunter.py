@@ -4,6 +4,7 @@
 #   Author: Andreas Georgiou (@superhedgy)
 
 # Standard Libraries
+import time
 import colorama
 import ipaddress
 # External Libraries
@@ -26,7 +27,6 @@ class TargetIP:
         self.cidr = ""
         self.location = ""
         self.country = ""
-
 
 def cprint(type, msg, reset):
     colorama.init()
@@ -78,11 +78,11 @@ def passive_query(hostx, key):
 
 
 def active(mswitch, hostx, wordlist, subwordlist, recursive=False):
-    print("HERE 0.1")
     results=subbrute.run(hostx.primary_domain, subdomains=wordlist)
-    print("HERE 0.11")
     for d in results:
-        print("[DEBUG][time] Item Discovered: ",d)
+        if mswitch.debug is True:
+            current_time = time.strftime("%H:%M:%S", time.localtime())
+            print("[DEBUG]["+str(current_time)+"][Item Discovered]: ",d)
         added_ips = []
         if (d[0] in hostx.subdomains) or (d[0] is hostx.primary_domain) or ("REFUSED" in d[1]) or ("NOERROR" in d[1]) or ("NXDOMAIN" in d[1]) or ("HINFO" in d[1]):
             pass
