@@ -10,10 +10,10 @@
 #  |__/  |__/ TTACK \______/ URFACE |__/     |__/ APPER v1.0
 #
 #  Andreas Georgiou (@superhedgy)
-#  Jacob Wilkin (@jacob_wilkin)
+#  Jacob Wilkin     (@jacob_wilkin)
 #
 # Example:
-# $python3 asm.py -t example.com -ln
+# $ python3 asm.py -t example.com -ln
 #
 
 # Standard Libraries
@@ -46,12 +46,11 @@ from modules import screencapture
 from modules import shodan
 from modules import subhunter
 from modules import urlscanio
-# from modules import weleakinfo
 from modules import whois_collector
 
 # Constants
 __author__ = " Andreas Georgiou (@superhedgy)\n\t Jacob Wilkin (@greenwolf)"
-__version__ = "v1.1"
+__version__ = "v1.2"
 
 
 # Classes
@@ -128,6 +127,7 @@ class MasterSwitch:
         self.expand = False
         self.stealth = False
         self.verbose = False
+        self.debug = False
 
 
 # Print ACII Banner
@@ -169,6 +169,7 @@ def init_checks(master_switch, outpath):
                         default=False)
     parser.add_argument("-ln", "--linkedinner", help="Extracts emails and employees details from linkedin.",
                         action="store_true", default=False)
+    parser.add_argument("-d", "--debug", help="Enables debugging information.",action="store_true",default=False)
     parser.add_argument("-v", "--verbose", help="Verbose ouput in the terminal window.", action="store_true",
                         default=False)
     args = parser.parse_args()
@@ -230,6 +231,10 @@ def init_checks(master_switch, outpath):
 
     if args.verbose:
         master_switch.verbose = True
+
+
+    if args.debug:
+        master_switch.debug = True
 
     return args.output
 
@@ -458,10 +463,10 @@ def keyloader(keychain, master_switch):
         master_switch.hunterio = False
 
     if len(keychain["shodan"]) == 32:
-        print("{0}   Shodan Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
+        print("{0}   Shodan Module         : [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
         master_switch.shodan = True
     else:
-        print("{0}   Shodan Module	: [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
+        print("{0}   Shodan Module   	 : [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
         master_switch.shodan = False
 
     if len(keychain["virustotal"]) == 64:
@@ -473,13 +478,6 @@ def keyloader(keychain, master_switch):
             "{0}   VirusTotal Module	: [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
         master_switch.virustotal = False
 
-#    if len(keychain["weleakinfo_priv"]) == 40:
-#        print(
-#            "{0}   WeLeakInfo Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
-#        master_switch.weleakinfo_private = True
-#    else:
-#        print("   WeLeakInfo Module	: [Disabled]")
-#        master_switch.weleakinfo_private = False
 
     if args.expand:
         print("{0}   SubHunter Module	: [{1}Recursive{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.YELLOW, Fore.WHITE, Style.RESET_ALL))
@@ -627,8 +625,6 @@ def print_results(count1, stime):
     print(" {0} Subdomains".format(Fore.RED + Style.BRIGHT + str(count1.subdomains) + Style.RESET_ALL + Fore.WHITE))
     print(" {0} Vulnerabities".format(Fore.RED + Style.BRIGHT + str(count1.vulns) + Style.RESET_ALL + Fore.WHITE))
     print(Fore.WHITE + Style.BRIGHT + "\n[%] Intelligence Extracted:" + Style.RESET_ALL)
-    #print(" {0} WeLeakInfo Credentials".format(
-    #    Fore.RED + Style.BRIGHT + str(count1.creds) + Style.RESET_ALL + Fore.WHITE))
     print(" {0} Employees' Details".format(
         Fore.RED + Style.BRIGHT + str(count1.employees) + Style.RESET_ALL + Fore.WHITE))
     print(" {0} AWS Buckets Discovered".format(
@@ -668,17 +664,16 @@ def main(keychain, switch, output_path, count):
     # End of For Loop
 
     # Debug Functionality
-    if switch.verbose is True:
+    if switch.debug is True:
         for k in target_list.keys():
             print("*************************")
-            print("Targets Dictionary Key:", k)
+            print("[DEBUG] IP Target Added to Dictionary:", k)
             for x in target_list[k].resolved_ips:
                 print(">> " + x.address)
             print("*************************")
 
     # Iterates Through the Target List
     for key in target_list.keys():
-
         # [B] Target - Domain Name - Execution Flow
         cprint("white", "\n[+] Target Domain: ", 0)
         cprint("red", target_list[key].primary_domain, 1)
@@ -686,7 +681,7 @@ def main(keychain, switch, output_path, count):
         for ip in target_list[key].resolved_ips:
             cprint("white", "	|", 1)
             cprint("white", "  [{0}]".format(ip.address), 1)
-        print("HERE 0")
+
         if switch.expand is True:
             subhunter.active(switch, target_list[key], args.wordlist, args.subwordlist, recursive=True)  # Passive
         else:
@@ -696,19 +691,18 @@ def main(keychain, switch, output_path, count):
         # HTTP Based
         if switch.stealth is False:
             hosthunter.active(target_list[key], count)  # Active
-        print("HERE 1")
+
         # IP Based
         if switch.shodan is True:
             shodan.port_scan(target_list[key], keychain["shodan"], count)  # Passive
-        print("HERE 2")
 
         if switch.whois_collector is True and switch.stealth is False:
             whois_collector.wlookup(target_list[key])  # Active
-        print("HERE 3")
+
         # hosthunter.query_api(target_list[key]) # Passive
         hosthunter.org_finder(target_list[key])  # Passive
-        print("HERE")
-        buckethunter.passive_query(target_list[key], keychain["grayhatwarfare"])  # Passive
+
+        buckethunter.passive_query(switch,target_list[key], keychain["grayhatwarfare"])  # Passive
 
         if switch.expand is True:
             asn_expansion(target_list[key])  # Passive
@@ -721,10 +715,8 @@ def main(keychain, switch, output_path, count):
             subhunter.passive_query(target_list[key], keychain["virustotal"])  # Passive
 
         if switch.stealth is not True:
-            # start_time = time()
-            # ttime = round(time() - start_time,2)
-            # print("Time Took " + str(ttime) + "s")
             hosthunter.dnsquery(target_list[key])  # Active
+            pass
 
         if switch.hunterio is True:
             hunterio.query(target_list[key], keychain["hunterio"])
@@ -763,10 +755,6 @@ def main(keychain, switch, output_path, count):
                                                         keychain["linkedin_password"], answer2, 0)
             else:
                 cprint("error", "Linkedinner module has been disabled. No valid input was detected.", 1)
-
-#        if switch.weleakinfo_private is True:
-#            weleakinfo.query(target_list[key], keychain["weleakinfo"], keychain["weleakinfo_priv"])  # Passive
-#            weleakinfo.priv_api(target_list[key], keychain["weleakinfo"], keychain["weleakinfo_priv"])  # Passive
 
         if len(target_list[key].subdomains) > 0:
             print(Fore.WHITE + " || Subdomains: " + Fore.YELLOW + str(
@@ -815,11 +803,11 @@ def main(keychain, switch, output_path, count):
                 else:
                     cprint("info", ",", 0)
 
-    #    if len(target_list[key].breaches) > 0:
-    #        cprint("white", " || WeLeakInfo Data Breaches: ", 1)
+# WeLeakInfo Code - Left here for future use
+#    if len(target_list[key].breaches) > 0:
+#        cprint("white", " || WeLeakInfo Data Breaches: ", 1)
 #            for email, breach in target_list[key].breaches.items():
 #                cprint("yellow", "{0} : {1}".format(email, breach), 1)
-
 #        if len(target_list[key].creds) > 0:
 #            cprint("white", " || WeLeakInfo Credentials Discovered: ", 0)
 #            cprint("info", "" + str(len(target_list[key].creds)), 1)
@@ -829,7 +817,6 @@ def main(keychain, switch, output_path, count):
 #                    if len(target_list[key].creds) > 8:
 #                        cprint("yellow", "...", 1)
 #                    break
-
 #        if len(target_list[key].hashes) > 0:
 #            cprint("white", " || WeLeakInfo Hashes Discovered: ", 0)
 #            cprint("info", "" + str(len(target_list[key].hashes)), 1)
@@ -839,6 +826,7 @@ def main(keychain, switch, output_path, count):
 #                    if len(target_list[key].hashes) > 5:
 #                        cprint("yellow", "...", 1)
 #                    break
+#
 
         if len(target_list[key].buckets) > 0:
             cprint("white", " || AWS Buckets Discovered: ", 0)
@@ -876,9 +864,6 @@ def main(keychain, switch, output_path, count):
                 " {0}|| DMARC : {1}".format(Fore.WHITE, Fore.GREEN + target_list[key].dmarc_status + Style.RESET_ALL))
         else:
             print(" {0}|| DMARC : {1}".format(Fore.WHITE, Fore.RED + Style.BRIGHT + "False" + Style.RESET_ALL))
-
-        # if len(target_list[key].pattern) > 0:
-        #     print (" || Email Pattern Detected : {0}".format(Fore.RED+Style.BRIGHT+email.pattern+Style.RESET_ALL))
 
         print(" {0}|| dnsDumpster Map: {1}".format(Fore.WHITE, Fore.YELLOW + str(map_path) + Style.RESET_ALL))
 
@@ -933,7 +918,6 @@ def sig_handler(signal, frame):
         pass
     cprint("info", "\n[i] Bye, bye!\n", 1)  # Success Msg
     sys.exit(0)
-
 
 if __name__ == "__main__":
 
