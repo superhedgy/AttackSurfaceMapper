@@ -1,6 +1,7 @@
 ![Python 3](https://img.shields.io/badge/Python-3_only-blue.svg "Python 3 only")
 ![GitHub](https://img.shields.io/github/license/superhedgy/AttackSurfaceMapper)
 ![GitHub last commit](https://img.shields.io/github/last-commit/superhedgy/AttackSurfaceMapper)
+![GitHub Issues](https://img.shields.io/github/issues/superhedgy/AttackSurfaceMapper)
 
 ![Attack Surface Mapper Logo](https://npercoco.typepad.com/.a/6a0133f264aa62970b0240a49c6ba4200d-800wi "Attack Surface Mapper Logo")
 
@@ -74,6 +75,7 @@ optional arguments:
                         Specify a list of child subdomains.
   -e, --expand          Expand the target list recursively.
   -ln, --linkedinner    Extracts emails and employees details from linkedin.
+  -d, --debug           Enables debugging information.
   -v, --verbose         Verbose ouput in the terminal window.
 
 Authors: Andreas Georgiou (@superhedgy)
