@@ -27,7 +27,7 @@ $ cd AttackSurfaceMapper
 $ python3 -m pip install --no-cache-dir -r requirements.txt
 ```
 
-[3] Add optional API keys to enable more data gathering 
+[3] Add optional API keys to enhance data gathering & analysis 
 
 Register and obtain an API key from:  
 * [VirusTotal](https://www.virustotal.com/gui/join-us)  
