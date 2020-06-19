@@ -32,7 +32,7 @@ Register and obtain an API key from:
 * [VirusTotal](https://www.virustotal.com/gui/join-us)  
 * [ShodanIO](https://account.shodan.io/register)
 * [HunterIO](https://hunter.io/users/sign_up)  
-* [WeLeakInfo](https://weleakinfo.com/register)  
+* ~~[WeLeakInfo](https://weleakinfo.com/register)~~
 * [LinkedIn](https://www.linkedin.com/start/join)  
 * [GrayHatWarfare](https://buckets.grayhatwarfare.com/register)  
 
