@@ -50,7 +50,7 @@ from modules import whois_collector
 from modules import censys
 
 # Constants
-__author__ = " Andreas Georgiou (@superhedgy)\n\t Jacob Wilkin (@greenwolf)\n\t Aidan Holland (@thehappydinoa)"
+__author__ = " Andreas Georgiou (@superhedgy)\n\t Jacob Wilkin (@greenwolf)"
 __version__ = "v1.2"
 
 
