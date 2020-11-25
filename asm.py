@@ -11,7 +11,6 @@
 #
 #  Andreas Georgiou (@superhedgy)
 #  Jacob Wilkin     (@jacob_wilkin)
-#  Aidan Holland    (@thehappydinoa)
 #
 # Example:
 # $ python3 asm.py -t example.com -ln
