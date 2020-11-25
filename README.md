@@ -96,8 +96,7 @@ Authors: Andreas Georgiou (@superhedgy)
 
 - [Andreas Georgiou](https://twitter.com/superhedgy)
 - [Jacob Wilkin](https://github.com/Greenwolf)
-- [Aidan Holland](https://github.com/thehappydinoa)
 
 ## Acknowledgments
+- Thanks to [Aidan Holland](https://github.com/thehappydinoa) for adding the Censys module.
 
-- Thanks to `[Your Name Could Be Here, Come Help Out!]` for contributions to the project.
