@@ -89,7 +89,6 @@ optional arguments:
 
 Authors: Andreas Georgiou (@superhedgy)
          Jacob Wilkin (@greenwolf)
-         Aidan Holland (@thehappydinoa)
 ```
 
 ## Authors
@@ -98,5 +97,5 @@ Authors: Andreas Georgiou (@superhedgy)
 - [Jacob Wilkin](https://github.com/Greenwolf)
 
 ## Acknowledgments
-- Thanks to [Aidan Holland](https://github.com/thehappydinoa) for adding the Censys module.
 
+- Thanks to [Aidan Holland](https://github.com/thehappydinoa) for adding the Censys module.
