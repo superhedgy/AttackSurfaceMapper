@@ -47,6 +47,7 @@ from modules import shodan
 from modules import subhunter
 from modules import urlscanio
 from modules import whois_collector
+from modules import censys
 
 # Constants
 __author__ = " Andreas Georgiou (@superhedgy)\n\t Jacob Wilkin (@greenwolf)"
@@ -124,6 +125,7 @@ class MasterSwitch:
         self.screencapture = True
         self.webscraper = True
         self.linkedinner = False
+        self.censys = False
         self.expand = False
         self.stealth = False
         self.verbose = False
@@ -156,7 +158,7 @@ def init_checks(master_switch, outpath):
     parser.add_argument("-o", "--output", help="Sets the path of the output file.", type=str, default=outpath)
     parser.add_argument("-sc", "--screen-capture", help="Capture a screen shot of any associated Web Applications.",
                         action="store_true", default=False)
-    parser.add_argument("-sth", "--stealth", help="Passive mode allows reconaissaince using OSINT techniques only.",
+    parser.add_argument("-sth", "--stealth", help="Passive mode allows reconnaissance using OSINT techniques only.",
                         action="store_true", default=False)
     parser.add_argument("-t", "--target", help="Set a single target IP.")
     parser.add_argument("targets", nargs='?', help="Sets the path of the target IPs file.", type=str, default="")
@@ -167,10 +169,10 @@ def init_checks(master_switch, outpath):
                         default="resources/top1000_sublist.txt")
     parser.add_argument("-e", "--expand", help="Expand the target list recursively.", action="store_true",
                         default=False)
-    parser.add_argument("-ln", "--linkedinner", help="Extracts emails and employees details from linkedin.",
+    parser.add_argument("-ln", "--linkedinner", help="Extracts emails and employees details from LinkedIn.",
                         action="store_true", default=False)
     parser.add_argument("-d", "--debug", help="Enables debugging information.",action="store_true",default=False)
-    parser.add_argument("-v", "--verbose", help="Verbose ouput in the terminal window.", action="store_true",
+    parser.add_argument("-v", "--verbose", help="Verbose output in the terminal window.", action="store_true",
                         default=False)
     args = parser.parse_args()
 
@@ -478,6 +480,12 @@ def keyloader(keychain, master_switch):
             "{0}   VirusTotal Module	: [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
         master_switch.virustotal = False
 
+    if len(keychain["censys_id"]) > 0 and len(keychain["censys_secret"]) > 0:
+        print("{0}   Censys Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
+        master_switch.censys = True
+    else:
+        print("{0}   Censys Module	: [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
+        master_switch.censys = False
 
     if args.expand:
         print("{0}   SubHunter Module	: [{1}Recursive{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.YELLOW, Fore.WHITE, Style.RESET_ALL))
@@ -698,6 +706,9 @@ def main(keychain, switch, output_path, count):
 
         if switch.whois_collector is True and switch.stealth is False:
             whois_collector.wlookup(target_list[key])  # Active
+
+        if switch.censys is True:
+            censys.port_scan(target_list[key], keychain["censys_id"], keychain["censys_secret"], count)  # Passive
 
         # hosthunter.query_api(target_list[key]) # Passive
         hosthunter.org_finder(target_list[key])  # Passive
@@ -920,7 +931,6 @@ def sig_handler(signal, frame):
     sys.exit(0)
 
 if __name__ == "__main__":
-
     signal.signal(signal.SIGINT, sig_handler)  # Signal Listener
     now = datetime.now()
     output_path = 'asm_run_' + str(datetime.now().strftime("%d.%m.%y_%H-%M-%S"))
