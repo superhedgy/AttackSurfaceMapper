@@ -11,6 +11,7 @@
 #
 #  Andreas Georgiou (@superhedgy)
 #  Jacob Wilkin     (@jacob_wilkin)
+#  Aidan Holland    (@thehappydinoa)
 #
 # Example:
 # $ python3 asm.py -t example.com -ln
@@ -50,7 +51,7 @@ from modules import whois_collector
 from modules import censys
 
 # Constants
-__author__ = " Andreas Georgiou (@superhedgy)\n\t Jacob Wilkin (@greenwolf)"
+__author__ = " Andreas Georgiou (@superhedgy)\n\t Jacob Wilkin (@greenwolf)\n\t Aidan Holland (@thehappydinoa)"
 __version__ = "v1.2"
 
 
