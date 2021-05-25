@@ -8,17 +8,21 @@
 import time
 
 # External Libraries
-from censys.ipv4 import CensysIPv4
+from censys.search import CensysHosts
 
-__version__ = "v1.0"
+__version__ = "v2.0"
 
 def port_scan(hostx, censys_id, censys_secret, counter):
-    c = CensysIPv4(censys_id, censys_secret)
+    c = CensysHosts(censys_id, censys_secret)
 
     for ip in hostx.resolved_ips:
         try:
             response = c.view(ip.address)
-            ip.ports = response["ports"]
+            ports = response.get("ports", [])
+            if ip.ports:
+                ip.ports.update(ports)
+            else:
+                ip.ports = ports
             counter.ports = counter.ports + len(hostx.ports)
         except:
             time.sleep(1)

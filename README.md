@@ -42,7 +42,7 @@ Register and obtain an API key from:
 - ~~[WeLeakInfo](https://weleakinfo.com/register)~~
 - [LinkedIn](https://www.linkedin.com/start/join)
 - [GrayHatWarfare](https://buckets.grayhatwarfare.com/register)
-- [Censys.io](https://censys.io/account)
+- [Censys.io](https://search.censys.io/account)
 
 Edit and enter the keys in keylist file
 
