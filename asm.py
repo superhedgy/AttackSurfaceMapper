@@ -512,7 +512,7 @@ def cprint(type, msg, reset):
     }
     style = message.get(type.lower())
 
-     if type == "error":
+    if type == "error":
         print("{0}\n[*] Error: {1}".format(Fore.RED + Style.BRIGHT, Style.RESET_ALL + Fore.WHITE + msg))
     else:
         print(style + msg, end= "")
