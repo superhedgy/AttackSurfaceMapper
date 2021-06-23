@@ -526,7 +526,7 @@ def cprint(type, msg, reset):
      if type == "error":
         print("{0}\n[*] Error: {1}".format(Fore.RED + Style.BRIGHT, Style.RESET_ALL + Fore.WHITE + msg))
     else:
-        print(style + msg, end== "")
+        print(style + msg, end= "")
     if reset == 1:
         print(Style.RESET_ALL)
 
