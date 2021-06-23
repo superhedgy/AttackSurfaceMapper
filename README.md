@@ -21,7 +21,8 @@ As this is a Python based tool, it should theoretically run on Linux, ChromeOS (
 
 0. You need to have and use Python3. 
       ```sh
-      because of the incompatibility between 2 and 3, if you attempt to use "python -m pip install..." without specifying or having set your default to python3, then the code will fail 
+      because of the incompatibility between 2 and 3, if you attempt to use "python -m pip install..." 
+      without specifying or having set your default to python3, then the code will fail 
       ```
 
 1. Download AttackSurfaceMapper
