@@ -19,6 +19,9 @@ Once the target list is fully expanded it performs passive reconnaissance on the
 
 As this is a Python based tool, it should theoretically run on Linux, ChromeOS ([Developer Mode](https://www.chromium.org/chromium-os/developer-information-for-chrome-os-devices/generic)), macOS and Windows.
 
+0. You need to have and use Python3. 
+      ````because of the incompatibility between 2 and 3, if you attempt to use "python -m pip install..." without specifying or having set your default to python3, then the code will faill 
+
 1. Download AttackSurfaceMapper
 
 ```sh
