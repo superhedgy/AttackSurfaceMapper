@@ -89,7 +89,6 @@ optional arguments:
   -sw SUBWORDLIST, --subwordlist SUBWORDLIST
                         Specify a list of child subdomains.
   -e, --expand          Expand the target list recursively.
-  -ln, --linkedinner    Extracts emails and employees details from LinkedIn.
   -d, --debug           Enables debugging information.
   -v, --verbose         Verbose output in the terminal window.
 
