@@ -1,8 +1,6 @@
 virustotal = ""
 hunterio = ""
 shodan = ""
-linkedin_username = ""
-linkedin_password = ""
 grayhatwarfare = ""
 censys_id = ""
 censys_secret = ""

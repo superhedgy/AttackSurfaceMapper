@@ -41,7 +41,6 @@ from modules import buckethunter
 from modules import dnsdumpster
 from modules import hosthunter
 from modules import hunterio
-from modules import linkedinner
 from modules import screencapture
 from modules import shodan
 from modules import subhunter
@@ -124,7 +123,6 @@ class MasterSwitch:
         self.weleakinfo_private = True
         self.screencapture = True
         self.webscraper = True
-        self.linkedinner = False
         self.censys = False
         self.expand = False
         self.stealth = False
@@ -169,8 +167,6 @@ def init_checks(master_switch, outpath):
                         default="resources/top1000_sublist.txt")
     parser.add_argument("-e", "--expand", help="Expand the target list recursively.", action="store_true",
                         default=False)
-    parser.add_argument("-ln", "--linkedinner", help="Extracts emails and employees details from LinkedIn.",
-                        action="store_true", default=False)
     parser.add_argument("-d", "--debug", help="Enables debugging information.",action="store_true",default=False)
     parser.add_argument("-v", "--verbose", help="Verbose output in the terminal window.", action="store_true",
                         default=False)
@@ -449,14 +445,7 @@ def keyloader(keychain, master_switch):
         master_switch.screencapture = False
     print("{0}   DNSdumpster Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN + Style.BRIGHT, Fore.WHITE, Style.RESET_ALL))
     print("{0}   URLScanIO Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
-
-    if len(keychain["linkedin_username"]) > 0 and len(keychain["linkedin_password"]) and args.linkedinner:
-        print("{0}   LinkedInner Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
-        master_switch.linkedinner = True
-    else:
-        print("{0}   LinkedInner Module	: [{1}Disabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.RED, Fore.WHITE, Style.RESET_ALL))
-        master_switch.linkedinner = False
-
+    
     if len(keychain["hunterio"]) == 40:
         print("{0}   HunterIO Module	: [{1}Enabled{2}]{3}".format(Fore.WHITE + Style.BRIGHT, Fore.GREEN, Fore.WHITE, Style.RESET_ALL))
         master_switch.hunterio = True
@@ -526,7 +515,7 @@ def cprint(type, msg, reset):
     if type == "error":
         print("{0}\n[*] Error: {1}".format(Fore.RED + Style.BRIGHT, Style.RESET_ALL + Fore.WHITE + msg))
     else:
-        print(style + msg, end="")
+        print(style + msg, end= "")
     if reset == 1:
         print(Style.RESET_ALL)
 
@@ -741,32 +730,6 @@ def main(keychain, switch, output_path, count):
             print("\n {0}|| Organisation Name : {1}".format(Fore.WHITE,
                                                             Fore.YELLOW + target_list[key].orgName + Style.RESET_ALL))
 
-        if switch.linkedinner is True:
-            answer2 = input(
-                Fore.WHITE + "[" + Fore.RED + Style.BRIGHT + ">" + Style.RESET_ALL + Fore.WHITE + "]" + Fore.WHITE + " Enter Company Name / Company ID: ")
-            if answer2.isdigit() and len(answer2) > 0:
-                cprint("info", "[i] Searching Linkedin with CompanyID: " + answer2, 1)
-                # LinkedInUsername, linkedin_password, company_name, companyid
-
-                linkedinner.get_emails_for_company_name(switch, target_list[key], keychain["linkedin_username"],
-                                                        keychain["linkedin_password"], "", answer2)
-            elif not answer2.isdigit() and len(answer2) > 0:
-                cprint("info", "[i] Searching Linkedin with Company Name: " + answer2, 1)
-                linkedinner.get_emails_for_company_name(switch, target_list[key], keychain["linkedin_username"],
-                                                        keychain["linkedin_password"], answer2, 0)
-            elif len(target_list[key].orgName) > 0:
-                cprint("info", "[i] Searching Linkedin with Company Name: " + target_list[key].orgName.replace(",",
-                                                                                                                 "").replace(
-                    ".", ""), 1)
-                answer2 = str(
-                    target_list[key].orgName.replace(",", "").replace(".", "").replace(" ", "%20").replace(" LLC",
-                                                                                                           "").replace(
-                        " LTD", ""))
-                linkedinner.get_emails_for_company_name(switch, target_list[key], keychain["linkedin_username"],
-                                                        keychain["linkedin_password"], answer2, 0)
-            else:
-                cprint("error", "Linkedinner module has been disabled. No valid input was detected.", 1)
-
         if len(target_list[key].subdomains) > 0:
             print(Fore.WHITE + " || Subdomains: " + Fore.YELLOW + str(
                 len(target_list[key].subdomains)) + Style.RESET_ALL)
@@ -813,31 +776,6 @@ def main(keychain, switch, output_path, count):
                     cprint("info", "", 1)
                 else:
                     cprint("info", ",", 0)
-
-# WeLeakInfo Code - Left here for future use
-#    if len(target_list[key].breaches) > 0:
-#        cprint("white", " || WeLeakInfo Data Breaches: ", 1)
-#            for email, breach in target_list[key].breaches.items():
-#                cprint("yellow", "{0} : {1}".format(email, breach), 1)
-#        if len(target_list[key].creds) > 0:
-#            cprint("white", " || WeLeakInfo Credentials Discovered: ", 0)
-#            cprint("info", "" + str(len(target_list[key].creds)), 1)
-#            for i in range(len(target_list[key].creds)):
-#                cprint("yellow", target_list[key].creds[i], 1)
-#                if i > 8:
-#                    if len(target_list[key].creds) > 8:
-#                        cprint("yellow", "...", 1)
-#                    break
-#        if len(target_list[key].hashes) > 0:
-#            cprint("white", " || WeLeakInfo Hashes Discovered: ", 0)
-#            cprint("info", "" + str(len(target_list[key].hashes)), 1)
-#            for i in range(len(target_list[key].hashes)):
-#                cprint("yellow", target_list[key].hashes[i], 1)
-#                if i > 8:
-#                    if len(target_list[key].hashes) > 5:
-#                        cprint("yellow", "...", 1)
-#                    break
-#
 
         if len(target_list[key].buckets) > 0:
             cprint("white", " || AWS Buckets Discovered: ", 0)
