@@ -26,7 +26,7 @@ git clone https://github.com/superhedgy/AttackSurfaceMapper
 cd AttackSurfaceMapper
 ```
 
-2. Install Python dependencies
+2. Install Python3 dependencies
 
 ```sh
 python3 -m pip install --no-cache-dir -r requirements.txt
@@ -53,7 +53,7 @@ nano keylist.asm
 ## Usage
 
 ```sh
-python asm.py -t your_site.com -ln -w resources/top100_sublist.txt -o demo_run
+python3 asm.py -t your_site.com -ln -w resources/top100_sublist.txt -o demo_run
 ```
 
 ### Optional Parameters
