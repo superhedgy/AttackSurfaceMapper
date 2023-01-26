@@ -163,6 +163,7 @@ class Resolver:
 
 
 class VerifyNameservers(multiprocessing.Process):
+    pid = None
     def __init__(self, target, query_type, resolver_q, resolver_list, authoritative=False):
         multiprocessing.Process.__init__(self, target=self.run)
         self.daemon = True
