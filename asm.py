@@ -27,6 +27,9 @@ import sys
 from datetime import datetime
 from time import time, sleep
 from urllib import parse
+import functools
+import concurrent
+from concurrent.futures import ThreadPoolExecutor
 
 # External Libraries
 import colorama
@@ -346,17 +349,20 @@ def asn_expansion(mswitch, hostx):
                         hostx.resolved_ips.append(tmp)
 
 
-# Resolve Domain Function - Returns a list
+@functools.lru_cache(maxsize=1024)
 def resolve_domain(domain):
-    try:
-        resolve = socket.gethostbyname_ex(domain)
-        IP = resolve[2]
-        return IP
-    except Exception:
-        return ""
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future = executor.submit(socket.getaddrinfo, domain, None)
+        try:
+            IP = [i[4][0] for i in future.result()]
+            return IP
+        except Exception as e:
+            print(e)
+            return ""
 
 
-# validate Funciton - Validates IP
+
+
 def add_target_domain(list_domain, input_domain, validated_input):
     input_domain = input_domain.replace("\n", "")
     if not input_domain:
