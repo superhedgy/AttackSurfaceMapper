@@ -4,6 +4,7 @@
 #   Author: Andreas Georgiou (@superhedgy)
 
 import socket
+import requests
 # Standard Libraries
 import ssl
 
@@ -48,7 +49,7 @@ def ssl_grabber(resolved_ip, port):
 def r_dns(targetIP):
     try:
         hostname = socket.gethostbyaddr(targetIP.address)
-        if hostname[0] is not "":
+        if hostname[0] != "":
             targetIP.hostname.append(hostname[0])
         # print("[Debug] r_dns result " + hostname[0]) ## Debug Statement
     except:
@@ -60,20 +61,18 @@ def query_api(hostx):
     try:
         url = "https://api.hackertarget.com/reverseiplookup/?q="
         r2 = requests.get(url + hostx.resolved_ips[0].address, verify=False).text
-        if (r2.find("No DNS A records found") == -1) and (
-                r2.find("API count exceeded") == -1 and r2.find("error") == -1):
+        
+        # Check for "No DNS A records found" or "API count exceeded" and "error"
+        if ("No DNS A records found" not in r2) and ("API count exceeded" not in r2) and ("error" not in r2):
             for host in r2.split('\n'):
                 if (host == "") or (host in hostx.hname):
                     pass
                 else:
                     hostx.hname.append(host)
-        # Add API count exceed detection
         else:
             pass
-    except (
-    requests.exceptions.ConnectionError, urllib3.connection.ConnectionError, urllib3.exceptions.ConnectTimeoutError,
-    urllib3.exceptions.MaxRetryError, urllib3.exceptions.TimeoutError, socket.error, socket.timeout):
-        print("error", "query_api failed, connecting with HackerTarget.com API", 1)
+    except (requests.exceptions.ConnectionError, socket.error, socket.timeout) as e:
+        print(f"Error: query_api failed, connecting with HackerTarget.com API. {e}")
 
 
 def org_finder(hostx):
@@ -94,50 +93,54 @@ def dnslookup(hostx):
     try:
         url = "https://api.hackertarget.com/dnslookup/?q="
         r2 = requests.get(url + hostx.primary_domain, verify=False).text
-        if (r2.find("No DNS A records found") == -1) and (
-                r2.find("API count exceeded") == -1 and r2.find("error") == -1):
+        
+        # Check for "No DNS A records found" or "API count exceeded" and "error"
+        if ("No DNS A records found" not in r2) and ("API count exceeded" not in r2) and ("error" not in r2):
             hostx.dnsrecords = r2.splitlines()
-            # Add API count exceed detection
+            # Check for SPF record
             for record in hostx.dnsrecords:
                 word = record.rsplit(':')
                 try:
                     if ("TXT" in word[0]) and ("v=spf1" in word[1]):
                         hostx.spf = True
+                        break
                 except:
                     pass
-            if hostx.spf is None:
-                hostx.spf = False
-        else:
-            pass
-    except (
-    requests.exceptions.ConnectionError, urllib3.connection.ConnectionError, urllib3.exceptions.ConnectTimeoutError,
-    urllib3.exceptions.MaxRetryError, urllib3.exceptions.TimeoutError, socket.error, socket.timeout):
-        print("error", " dnslookup failed, connecting with HackerTarget.com API", 1)
+            hostx.spf = False if hostx.spf is None else True
+    except (requests.exceptions.ConnectionError, socket.error, socket.timeout) as e:
+        print(f"Error: dnslookup failed, connecting with HackerTarget.com API. {e}")
 
+
+
+def check_dmarc_record(dmarc_record):
+    # Parses a DMARC record and checks for restrictions on email spoofing.
+    if "v=DMARC" in dmarc_record:
+        if ";p=reject;" in dmarc_record:
+            return "Primary Domain is not Spoofable. "
+        elif ";p=quarantine;" in dmarc_record:
+            return "Primary Domain accepts spoofed emails but they will be marked as suspicious. "
+        elif ";p=none;" in dmarc_record:
+            return "Primary Domain allows Email Spoofing. "
+    else:
+        return "Spoofable Email Domain."
+
+def check_subdomain_spoofing(dmarc_record):
+    # Checks a DMARC record for restrictions on email spoofing for subdomains.
+    if ";sp=none;" in dmarc_record:
+        return "Subdomains allow Email Spoofing."
+    elif ";sp=reject;" in dmarc_record:
+        return "SubDomains are not Spoofable."
+    elif ";sp=quarantine;" in dmarc_record:
+        return "SubDomains will accept spoofed emails but they will be marked as suspicious."
 
 def dnsquery(hostx):
+    # Retrieves DMARC and MX records for a given hostx object.
     try:
         response = dns.resolver.query('_dmarc' + '.' + hostx.primary_domain, 'TXT')
-
         for rdata in response:
             dmarc_record = str(rdata).replace(' ', '')
-            if "v=DMARC" in dmarc_record:
-                if ";p=reject;" in dmarc_record:
-                    hostx.dmarc_status = "Primary Domain is not Spoofable. "
-                elif ";p=quarantine;" in dmarc_record:
-                    hostx.dmarc_status = "Primary Domain accepts spoofed emails but they will be marked as suspicious. "
-                elif ";p=none;" in dmarc_record:
-                    hostx.dmarc_status = "Primary Domain allows Email Spoofing. "
-
-                if ";sp=none;" in dmarc_record:
-                    hostx.dmarc_status += "Subdomains allow Email Spoofing."
-                elif ";sp=reject;" in dmarc_record:
-                    hostx.dmarc_status += "SubDomains are not Spoofable."
-                elif ";sp=quarantine;" in dmarc_record:
-                    hostx.dmarc_status += "SubDomains will accept spoofed emails but they will be marked as suspicious."
-            else:
-                hostx.dmarc_status = "Spoofable Email Domain."
-
+            hostx.dmarc_status = check_dmarc_record(dmarc_record)
+            hostx.dmarc_status += check_subdomain_spoofing(dmarc_record)
             hostx.dmarc.append(str(rdata))
     except:
         hostx.dmarc = []
