@@ -98,3 +98,4 @@ Authors: Andreas Georgiou (@superhedgy)
 ## Acknowledgments
 
 - Thanks to [Aidan Holland](https://github.com/thehappydinoa) for adding the Censys module.
+- Thanks to [Void] (https://github.com/VoidDaDev) for updating and fixing some of the code.
