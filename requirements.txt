@@ -4,7 +4,7 @@ dnslib>=0.9.10
 dnspython>=1.15.0
 ipwhois>=1.1.0
 netaddr>=0.7.19
-pymongo==3.8.0
+pymongo==4.6.3
 pyopenssl>=18.0.0
 requests
 requests-html>=0.10.0
